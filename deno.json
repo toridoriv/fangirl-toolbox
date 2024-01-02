@@ -1,0 +1,38 @@
+{
+  "name": "fangirl-toolbox",
+  "version": "0.1.0",
+  "compilerOptions": {
+    "noErrorTruncation": true,
+    "noStrictGenericChecks": true,
+    "suppressExcessPropertyErrors": true
+  },
+  "fmt": {
+    "options": {
+      "indentWidth": 2,
+      "lineWidth": 90,
+      "singleQuote": false,
+      "semiColons": true,
+      "useTabs": false,
+      "proseWrap": "always"
+    }
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  "unstable": [],
+  "lock": false,
+  "imports": {
+    "zod": "npm:zod",
+    "std/": "https://deno.land/std@0.210.0/",
+    "toolkit": "https://cdn.jsdelivr.net/gh/toridoriv/toolkit@f2a7556/index.js"
+  },
+  "scopes": {
+    "./bin/": {
+      "@lib/": "./lib/",
+      "@utils/": "./bin/utils/",
+      "cliffy/": "https://deno.land/x/cliffy@v1.0.0-rc.3/"
+    }
+  }
+}
