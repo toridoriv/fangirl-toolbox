@@ -26,7 +26,7 @@
   "imports": {
     "zod": "npm:zod",
     "std/": "https://deno.land/std@0.210.0/",
-    "toolkit": "https://cdn.jsdelivr.net/gh/toridoriv/toolkit@f2a7556/index.js"
+    "toolkit": "https://cdn.jsdelivr.net/gh/toridoriv/toolkit@main/index.js"
   },
   "scopes": {
     "./bin/": {
