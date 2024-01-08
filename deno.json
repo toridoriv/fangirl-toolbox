@@ -24,7 +24,7 @@
   "unstable": [],
   "lock": false,
   "imports": {
-    "zod": "npm:zod",
+    "zod": "https://deno.land/x/zod@v3.22.4/mod.ts",
     "std/": "https://deno.land/std@0.210.0/",
     "toolkit": "https://cdn.jsdelivr.net/gh/toridoriv/toolkit@main/index.js"
   },
