@@ -4,7 +4,8 @@
   "compilerOptions": {
     "noErrorTruncation": true,
     "noStrictGenericChecks": true,
-    "suppressExcessPropertyErrors": true
+    "suppressExcessPropertyErrors": true,
+    "lib": ["deno.window"]
   },
   "fmt": {
     "indentWidth": 2,
