@@ -13,9 +13,6 @@ export function md5(value: string) {
 /**
  * Generates a universally unique identifier (UUID) using the browser's crypto API.
  *
- * This function does not take any parameters. It utilizes the `crypto.randomUUID`
- * method available in the global scope (`globalThis`) to produce a version 4 UUID.
- *
  * @example
  *
  * <caption>Generating an UUID</caption>
