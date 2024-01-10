@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BaseModel } from "./utils.ts";
+import { BaseModel } from "./helpers.ts";
 
 /**
  * Language class represents a language with code, name and native name.
@@ -13,7 +13,8 @@ export class Language<
    * Gets a Language instance by its language code.
    *
    * @param code - The language code.
-   * @returns The Language instance for the given code, or a new Language instance with default values if not found.
+   * @returns The Language instance for the given code, or a new Language instance
+   *          with default values if not found.
    */
   declare static fromCode: <Code extends string>(
     code: Code
@@ -22,8 +23,9 @@ export class Language<
   /**
    * Gets a Language instance by language name.
    *
-   * @param name - The language name
-   * @returns The Language instance for the given name if found, otherwise a new Language instance with the name set
+   * @param name - The language name.
+   * @returns The Language instance for the given name if found, otherwise a new
+   *          Language instance with the name set.
    */
   declare static fromName: <Name extends string>(
     name: Name
@@ -34,8 +36,8 @@ export class Language<
   /**
    * Creates a new `Language` object.
    *
-   * @param code - The language code.
-   * @param name - The language name.
+   * @param code        - The language code.
+   * @param name        - The language name.
    * @param native_name - The language's name in its native script.
    */
   constructor(
