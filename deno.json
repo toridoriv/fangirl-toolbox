@@ -2,6 +2,7 @@
   "name": "fangirl-toolbox",
   "version": "0.1.0",
   "compilerOptions": {
+    "checkJs": true,
     "noErrorTruncation": true,
     "noStrictGenericChecks": true,
     "suppressExcessPropertyErrors": true,
@@ -34,5 +35,8 @@
       "@utils/": "./bin/utils/",
       "cliffy/": "https://deno.land/x/cliffy@v1.0.0-rc.3/"
     }
+  },
+  "tasks": {
+    "format:lib": "deno run --allow-all scripts/format.ts lib"
   }
 }
