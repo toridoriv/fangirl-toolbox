@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LanguageSchema, TranslatedText } from "./localization.ts";
+import { LanguageSchema, LocalizedText, TranslatedText } from "./localization.ts";
 import { md5, uuid } from "./crypto.ts";
 import { BaseModel } from "./helpers.ts";
 
@@ -121,7 +121,7 @@ export class Author extends BaseModel<typeof Author> {
    * The schema that defines the shape of the Author model.
    */
   static schema = z.object({
-    name: TranslatableTextSchema,
+    name: LocalizedText.schema.transform(BaseModel.parseFromModel(LocalizedText)),
     profile_url: z.string().url().nullable().default(null),
   });
 }
