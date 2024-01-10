@@ -2,5 +2,14 @@
   "[json][jsonc][javascript][typescript]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
-  "deno.enable": true
+  "deno.enable": true,
+  "deno.config": "./deno.json",
+  "editor.rulers": [90],
+  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.preferences.quoteStyle": "double",
+  "javascript.preferences.quoteStyle": "double",
+  "typescript.suggest.completeJSDocs": true,
+  "javascript.suggest.completeJSDocs": true,
+  "typescript.suggest.jsdoc.generateReturns": true,
+  "javascript.suggest.jsdoc.generateReturns": true
 }
