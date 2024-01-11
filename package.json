@@ -1,0 +1,45 @@
+{
+  "type": "module",
+  "config": {
+    "localization": {
+      "languages": [
+        {
+          "code": "en",
+          "name": "English"
+        },
+        {
+          "code": "es",
+          "name": "Spanish"
+        },
+        {
+          "code": "pt",
+          "name": "Portuguese"
+        },
+        {
+          "code": "it",
+          "name": "Italian"
+        },
+        {
+          "code": "fr",
+          "name": "French"
+        },
+        {
+          "code": "ja",
+          "name": "Japanese"
+        },
+        {
+          "code": "zh",
+          "name": "Chinese"
+        },
+        {
+          "code": "ko",
+          "name": "Korean"
+        },
+        {
+          "code": "ru",
+          "name": "Russian"
+        }
+      ]
+    }
+  }
+}
