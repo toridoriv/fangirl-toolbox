@@ -1,15 +1,28 @@
 {
-  "[json][jsonc][javascript][typescript]": {
+  "[javascript]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
-  "deno.enable": true,
+  "[json]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "deno.cacheOnSave": true,
   "deno.config": "./deno.json",
+  "deno.disablePaths": ["./var"],
+  "deno.enable": true,
+  "deno.lint": true,
+  "editor.formatOnSave": true,
   "editor.rulers": [90],
+  "javascript.preferences.quoteStyle": "double",
+  "javascript.suggest.completeJSDocs": true,
+  "javascript.suggest.jsdoc.generateReturns": true,
   "typescript.inlayHints.parameterNames.enabled": "all",
   "typescript.preferences.quoteStyle": "double",
-  "javascript.preferences.quoteStyle": "double",
   "typescript.suggest.completeJSDocs": true,
-  "javascript.suggest.completeJSDocs": true,
-  "typescript.suggest.jsdoc.generateReturns": true,
-  "javascript.suggest.jsdoc.generateReturns": true
+  "typescript.suggest.jsdoc.generateReturns": true
 }
