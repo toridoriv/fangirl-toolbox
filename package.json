@@ -1,4 +1,6 @@
 {
+  "name": "fangirl-toolbox",
+  "version": "0.1.0",
   "type": "module",
   "config": {
     "localization": {
@@ -41,5 +43,9 @@
         }
       ]
     }
+  },
+  "devDependencies": {
+    "@homer0/prettier-plugin-jsdoc": "^8.0.0",
+    "prettier": "^3.2.1"
   }
 }

@@ -1,6 +1,6 @@
 {
   "[javascript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[json]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
@@ -9,7 +9,7 @@
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "deno.cacheOnSave": true,
   "deno.config": "./deno.json",
@@ -24,5 +24,6 @@
   "typescript.inlayHints.parameterNames.enabled": "all",
   "typescript.preferences.quoteStyle": "double",
   "typescript.suggest.completeJSDocs": true,
-  "typescript.suggest.jsdoc.generateReturns": true
+  "typescript.suggest.jsdoc.generateReturns": true,
+  "prettier.enable": true
 }
