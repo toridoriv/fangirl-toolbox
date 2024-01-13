@@ -1,12 +1,14 @@
 {
-  "name": "fangirl-toolbox",
-  "version": "0.1.0",
   "compilerOptions": {
     "checkJs": true,
     "noErrorTruncation": true,
     "noStrictGenericChecks": true,
     "suppressExcessPropertyErrors": true,
-    "lib": ["deno.window"]
+    "strictFunctionTypes": true,
+    "lib": [
+      "deno.window",
+      "deno.worker"
+    ]
   },
   "fmt": {
     "indentWidth": 2,
@@ -16,19 +18,36 @@
     "useTabs": false,
     "proseWrap": "always"
   },
+  "imports": {
+    "@dependencies": "./dependencies.ts",
+    "@dev-dependencies": "./dev-dependencies.ts",
+    "@base": "./base/mod.ts",
+    "@localization": "./localization/mod.ts",
+    "@package": "./package.json",
+    "kuroshiro": "https://esm.sh/@sglkc/kuroshiro@1.0.1?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
+    "eld": "https://esm.sh/eld@1.0.0?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
+    "kuroshiro-analyzer-kuromoji": "https://esm.sh/@sglkc/kuroshiro-analyzer-kuromoji@1.0.1?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
+    "natural": "npm:natural@6.10.4",
+    "prettier": "https://esm.sh/prettier@3.2.1?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
+    "prettier-plugin-jsdoc": "https://esm.sh/@homer0/prettier-plugin-jsdoc@8.0.0?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
+    "std/": "https://deno.land/std@0.212.0/",
+    "toolkit": "https://cdn.jsdelivr.net/gh/toridoriv/toolkit@main/index.js",
+    "translit-rus-eng": "https://esm.sh/translit-rus-eng@1.0.8?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
+    "zod": "https://deno.land/x/zod@v3.22.4/mod.ts",
+    "webworker-threads": "https://esm.sh/web-threads@1.0.135?bundle-deps&target=deno&keep-names&deno-std=0.212.0"
+  },
   "lint": {
     "rules": {
-      "tags": ["recommended"],
-      "exclude": ["no-namespace", "no-empty-interface"]
+      "tags": [
+        "recommended"
+      ],
+      "exclude": [
+        "no-namespace",
+        "no-empty-interface"
+      ]
     }
   },
-  "unstable": [],
-  "lock": false,
-  "imports": {
-    "zod": "https://deno.land/x/zod@v3.22.4/mod.ts",
-    "std/": "https://deno.land/std@0.210.0/",
-    "toolkit": "https://cdn.jsdelivr.net/gh/toridoriv/toolkit@main/index.js"
-  },
+  "lock": "deno.lock",
   "scopes": {
     "./bin/": {
       "@lib/": "./lib/",
@@ -37,6 +56,8 @@
     }
   },
   "tasks": {
-    "format:lib": "deno run --allow-all scripts/format.ts lib"
-  }
+    "format:lib": "deno run --allow-all scripts/format.ts lib",
+    "localization:action": "deno run --allow-all localization/actions.ts"
+  },
+  "unstable": []
 }
