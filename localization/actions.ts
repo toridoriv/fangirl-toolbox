@@ -1,6 +1,6 @@
-import "@global";
-import packageJson from "@package" assert { type: "json" };
+import packageJson from "@package" with { type: "json" };
 import { Template } from "toolkit";
+import { execute } from "@base";
 
 const TAGS = ["{{", "}}"] as ["{{", "}}"];
 const TEMPLATES = {
@@ -9,13 +9,13 @@ const TEMPLATES = {
   enumItem: new Template(`{key} = "{value}",`),
   obj: new Template(
     "[{{name}}.{{main_key}}]: Object.freeze({\n    code: LanguageCode.{{code_key}},\n    name: LanguageName.{{name_key}},\n  }),",
-    TAGS
+    TAGS,
   ),
 };
 
 function generateEnums() {
   const sorted = packageJson.config.localization.languages.sort((a, b) =>
-    a.code.localeCompare(b.code)
+    a.code.localeCompare(b.code),
   );
   const codeEnums: string[] = [];
   const nameEnums: string[] = [];
@@ -35,7 +35,7 @@ function generateEnums() {
         main_key: upperCode,
         code_key: upperCode,
         name_key: upperName,
-      })
+      }),
     );
     byNameObjs.push(
       TEMPLATES.obj.render({
@@ -43,7 +43,7 @@ function generateEnums() {
         main_key: upperName,
         code_key: upperCode,
         name_key: upperName,
-      })
+      }),
     );
   }
 
@@ -82,4 +82,4 @@ function generateEnums() {
   Deno.writeTextFileSync(path, content);
 }
 
-actions.execute({ "generate-enums": generateEnums });
+execute({ "generate-enums": generateEnums });

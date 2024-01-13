@@ -1,7 +1,7 @@
-import "@global";
 import { eld, z } from "@dependencies";
 import { LanguageSchema } from "./schemas.ts";
 import { RichTextByLanguageCode } from "./utils.ts";
+import { Model } from "@base";
 
 /**
  * Type definition for the properties of a LocalizedText object.

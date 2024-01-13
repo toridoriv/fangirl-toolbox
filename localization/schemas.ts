@@ -1,7 +1,7 @@
-import "@global";
 import { z } from "zod";
 import { LANGUAGE_BY_CODE, LanguageCode } from "./enums.ts";
 import { LANGUAGE_BY_NAME, LanguageName } from "./enums.ts";
+import { lazyPick } from "@base";
 
 /**
  * Schema for language codes following `ISO 639-1` standard.
@@ -23,5 +23,5 @@ export const LanguageSchema = z
     /** The English name of the language. */
     name: LanguageNameSchema,
   })
-  .or(LanguageCodeSchema.transform(utils.lazyPick(LANGUAGE_BY_CODE)))
-  .or(LanguageNameSchema.transform(utils.lazyPick(LANGUAGE_BY_NAME)));
+  .or(LanguageCodeSchema.transform(lazyPick(LANGUAGE_BY_CODE)))
+  .or(LanguageNameSchema.transform(lazyPick(LANGUAGE_BY_NAME)));

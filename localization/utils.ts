@@ -13,7 +13,7 @@ const wordTokenizer = new natural.WordTokenizer();
 await kuroshiro.init(new KuromojiAnalyzer());
 
 const RubyTemplate = new toolkit.Template(
-  `<ruby>{original}<rp>(</rp><rt role="presentation" aria-hidden="true">{transliteration}</rt><rp>)</rp></ruby>`
+  `<ruby>{original}<rp>(</rp><rt role="presentation" aria-hidden="true">{transliteration}</rt><rp>)</rp></ruby>`,
 );
 
 /**
@@ -38,10 +38,7 @@ async function japanese(value: string) {
     to: "hiragana",
   });
 
-  return result.replaceAll(
-    "<rt>",
-    `<rt role="presentation" aria-hidden="true">`
-  );
+  return result.replaceAll("<rt>", `<rt role="presentation" aria-hidden="true">`);
 }
 
 function russian(value: string): string {
