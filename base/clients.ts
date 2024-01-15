@@ -63,6 +63,15 @@ export interface HttpRequestConfig<Body extends HttpRequestBody = HttpRequestBod
 }
 
 /**
+ * Type for HTTP request configuration specific to an HttpClient subclass,
+ * mapping the request method to the expected request body and response types.
+ */
+export type RequestConfigByHttpClient<
+  C extends HttpClientCtor,
+  M extends keyof HttpRequestConfigMap = "ANY",
+> = HttpRequestConfigMap<C["payload"]>[M];
+
+/**
  * Generic class for making HTTP requests or instantiate a custom `HttpClient`.
  */
 export class HttpClient<Client extends HttpClientCtor> {
@@ -70,9 +79,15 @@ export class HttpClient<Client extends HttpClientCtor> {
   declare static payload: HttpRequestBody;
   /** The response body type for responses from requests made by this client. */
   declare static response: HttpResponseBody;
+  /** Default HTTP request configuration for this client. */
+  static defaults: GetHttpRequestConfig<SafeAny> = {};
 
+  /**
+   * Creates a new instance of the HttpClient subclass.
+   *
+   * @returns A new instance of the HttpClient subclass.
+   */
   static create<T extends HttpClientCtor>(this: T, ...args: ConstructorParameters<T>) {
-    // @ts-ignore: ¯\_(ツ)_/¯
     return new this(...args);
   }
 
@@ -85,7 +100,7 @@ export class HttpClient<Client extends HttpClientCtor> {
    */
   static async request<T extends HttpClientCtor>(
     this: T,
-    config: GetHttpRequestConfigByCtor<T, "ANY">,
+    config: RequestConfigByHttpClient<T, "ANY">,
   ) {
     const response = await fetch(...HttpClient.getFetchArgs(config));
     const body = HttpClient.isJsonContentType(response.headers)
@@ -108,7 +123,7 @@ export class HttpClient<Client extends HttpClientCtor> {
    */
   static get<T extends HttpClientCtor>(
     this: T,
-    config: GetHttpRequestConfigByCtor<T, "GET">,
+    config: RequestConfigByHttpClient<T, "GET">,
   ) {
     return this.request(config);
   }
@@ -123,7 +138,7 @@ export class HttpClient<Client extends HttpClientCtor> {
    */
   static post<T extends HttpClientCtor>(
     this: T,
-    config: GetHttpRequestConfigByCtor<T, "POST">,
+    config: RequestConfigByHttpClient<T, "POST">,
   ) {
     return this.request(config);
   }
@@ -137,7 +152,7 @@ export class HttpClient<Client extends HttpClientCtor> {
    */
   static getFetchArgs<T extends HttpClientCtor>(
     this: T,
-    config: GetHttpRequestConfigByCtor<T, "ANY">,
+    config: RequestConfigByHttpClient<T, "ANY">,
   ): FetchArgs {
     const { url, endpoint, body, ...rest } = config;
 
@@ -174,13 +189,17 @@ export class HttpClient<Client extends HttpClientCtor> {
 
   protected declare ["constructor"]: Client;
 
+  public defaults: RequestConfigByHttpClient<Client, "ANY">;
+
   /**
    * Constructs a new `HttpClient` instance with the given default request configuration
    * options.
    *
    * @param defaults - The default options to use for requests from this client.
    */
-  public constructor(public defaults: GetHttpRequestConfigByCtor<Client, "ANY">) {
+  public constructor(defaults: RequestConfigByHttpClient<Client, "ANY">) {
+    this.defaults = deepMerge(this.constructor.defaults, defaults);
+
     if (!(this.defaults.headers instanceof Headers)) {
       this.defaults.headers = new Headers(this.defaults.headers);
     }
@@ -209,7 +228,7 @@ export class HttpClient<Client extends HttpClientCtor> {
    * @returns The response body, parsed as JSON if the response headers indicate JSON,
    *          otherwise as text.
    */
-  public request(config: GetHttpRequestConfigByCtor<Client, "ANY">) {
+  public request(config: RequestConfigByHttpClient<Client, "ANY">) {
     return this.constructor.request(this.getMergedConfig(config));
   }
 
@@ -221,7 +240,7 @@ export class HttpClient<Client extends HttpClientCtor> {
    * @returns The response body, parsed as JSON if the response headers indicate JSON,
    *          otherwise as text.
    */
-  public get(config: GetHttpRequestConfigByCtor<Client, "GET">) {
+  public get(config: RequestConfigByHttpClient<Client, "GET">) {
     return this.constructor.get(this.getMergedConfig(config));
   }
 
@@ -233,7 +252,7 @@ export class HttpClient<Client extends HttpClientCtor> {
    * @returns The response body, parsed as JSON if the response headers indicate JSON,
    *          otherwise as text.
    */
-  public post(config: GetHttpRequestConfigByCtor<Client, "POST">) {
+  public post(config: RequestConfigByHttpClient<Client, "POST">) {
     return HttpClient.post(this.getMergedConfig(config));
   }
 }
@@ -260,11 +279,6 @@ interface HttpRequestConfigMap<Body extends HttpRequestBody = HttpRequestBody> {
   TRACE: GetHttpRequestConfig<Body, "method">;
 }
 
-type GetHttpRequestConfigByCtor<
-  C extends HttpClientCtor,
-  M extends keyof HttpRequestConfigMap,
-> = HttpRequestConfigMap<C["payload"]>[M];
-
 type GetHttpResponseBody<C extends HttpClientCtor> = Promise<C["response"]>;
 
 type HttpRequestConfigUnion<C extends HttpClientCtor> = HttpRequestConfigMap<
@@ -277,21 +291,22 @@ interface HttpClientCtor {
   new (...args: SafeAny[]): this["prototype"];
   payload: HttpRequestBody;
   prototype: SafeAny;
+  defaults: RequestConfigByHttpClient<this, "ANY">;
   response: string | JsonObject;
   request<T extends HttpClientCtor>(
     this: T,
-    config: GetHttpRequestConfigByCtor<this, "ANY">,
+    config: RequestConfigByHttpClient<this, "ANY">,
   ): GetHttpResponseBody<this>;
   get<T extends HttpClientCtor>(
     this: T,
-    config: GetHttpRequestConfigByCtor<this, "GET">,
+    config: RequestConfigByHttpClient<this, "GET">,
   ): GetHttpResponseBody<this>;
   post<T extends HttpClientCtor>(
     this: T,
-    config: GetHttpRequestConfigByCtor<this, "POST">,
+    config: RequestConfigByHttpClient<this, "POST">,
   ): GetHttpResponseBody<this>;
   getFetchArgs<T extends HttpClientCtor>(
     this: T,
-    config: GetHttpRequestConfigByCtor<this, "ANY">,
+    config: RequestConfigByHttpClient<this, "ANY">,
   ): FetchArgs;
 }
