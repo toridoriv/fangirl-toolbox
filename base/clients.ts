@@ -274,10 +274,7 @@ type HttpRequestConfigUnion<C extends HttpClientCtor> = HttpRequestConfigMap<
 type FetchArgs = [string | URL, RequestInit];
 
 interface HttpClientCtor {
-  new (
-    defaults: GetHttpRequestConfigByCtor<this, "ANY">,
-    ...args: SafeAny[]
-  ): this["prototype"];
+  new (...args: SafeAny[]): this["prototype"];
   payload: HttpRequestBody;
   prototype: SafeAny;
   response: string | JsonObject;
