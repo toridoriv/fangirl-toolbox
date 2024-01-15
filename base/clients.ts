@@ -180,26 +180,11 @@ export class HttpClient<Client extends HttpClientCtor> {
    *
    * @param defaults - The default options to use for requests from this client.
    */
-  public constructor(
-    public defaults: GetHttpRequestConfigByCtor<Client, "ANY">,
-    ...args: ExcludeFirstFromList<ConstructorParameters<Client>>
-  ) {
+  public constructor(public defaults: GetHttpRequestConfigByCtor<Client, "ANY">) {
     if (!(this.defaults.headers instanceof Headers)) {
       this.defaults.headers = new Headers(this.defaults.headers);
     }
-
-    this.init(...args);
   }
-  /**
-   * Initializes the client with additional arguments.
-   *
-   * This method is called by the constructor with any extra arguments passed to it.
-   * It can be overridden in subclasses to handle additional initialization when
-   * subclassing Client.
-   *
-   * @param _args - The additional arguments passed to the constructor.
-   */
-  protected init(..._args: ExcludeFirstFromList<ConstructorParameters<Client>>): void {}
 
   protected getMergedConfig<Config extends HttpRequestConfigUnion<Client>>(
     config: Config,
@@ -294,7 +279,7 @@ interface HttpClientCtor {
     ...args: SafeAny[]
   ): this["prototype"];
   payload: HttpRequestBody;
-  prototype: HttpClient<this>;
+  prototype: SafeAny;
   response: string | JsonObject;
   request<T extends HttpClientCtor>(
     this: T,
