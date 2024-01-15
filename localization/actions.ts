@@ -1,13 +1,13 @@
 import packageJson from "@package" with { type: "json" };
-import { Template } from "toolkit";
+import { toolkit } from "@dependencies";
 import { execute } from "@base";
 
 const TAGS = ["{{", "}}"] as ["{{", "}}"];
 const TEMPLATES = {
-  const: new Template(`export const {{name}} = {\n  {{properties}}\n};`, TAGS),
-  enum: new Template(`export enum {{name}} {\n  {{enums}}\n}`, TAGS),
-  enumItem: new Template(`{key} = "{value}",`),
-  obj: new Template(
+  const: new toolkit.Template(`export const {{name}} = {\n  {{properties}}\n};`, TAGS),
+  enum: new toolkit.Template(`export enum {{name}} {\n  {{enums}}\n}`, TAGS),
+  enumItem: new toolkit.Template(`{key} = "{value}",`),
+  obj: new toolkit.Template(
     "[{{name}}.{{main_key}}]: Object.freeze({\n    code: LanguageCode.{{code_key}},\n    name: LanguageName.{{name_key}},\n  }),",
     TAGS,
   ),
@@ -64,14 +64,14 @@ function generateEnums() {
     ].join("\n"),
     [
       "/** Mapping between language codes and their corresponding language information. */",
-      TEMPLATES.enum.render({
+      TEMPLATES.const.render({
         name: "LANGUAGE_BY_CODE",
         properties: byCodeObjs.join("\n  "),
       }),
     ].join("\n"),
     [
       "/** Mapping between language names and their corresponding language information. */",
-      TEMPLATES.enum.render({
+      TEMPLATES.const.render({
         name: "LANGUAGE_BY_NAME",
         properties: byNameObjs.join("\n  "),
       }),
