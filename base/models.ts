@@ -4,10 +4,15 @@ import type { z } from "zod";
  * Represents the constructor of a base model.
  */
 export interface ModelCtor {
-  /** The prototype of the model class. */
-  // deno-lint-ignore no-explicit-any
-  prototype: any;
-  /** The Zod schema used to validate the model. */
+  new (...args: SafeAny[]): this["prototype"];
+  parse(properties: GetModelProperties<this>): this["prototype"];
+  /**
+   * The prototype of the model class.
+   */
+  prototype: SafeAny;
+  /**
+   * The Zod schema used to validate the model.
+   */
   schema: z.ZodTypeAny;
 }
 
@@ -25,12 +30,10 @@ export abstract class Model<C extends ModelCtor> {
    * @param properties - The properties to parse.
    * @returns A new instance of the model with the parsed properties.
    */
-  // deno-lint-ignore no-explicit-any
-  static parse<T extends ModelCtor = any>(
+  static parse<T extends ModelCtor>(
     this: T,
     properties: GetModelProperties<T>,
   ): ModelInstance<T> {
-    // @ts-ignore: ¯\_(ツ)_/¯
     return new this(properties);
   }
 
@@ -41,7 +44,7 @@ export abstract class Model<C extends ModelCtor> {
    * @param model - The model constructor whose parse method to bind.
    * @returns A function that parses properties into a model instance.
    */
-  static parseFromModel<T extends typeof Model, P>(model: T) {
+  static parseFromModel<T extends ModelCtor, P>(model: T) {
     return model.parse.bind(model) as (properties: P) => ModelInstance<T>;
   }
 

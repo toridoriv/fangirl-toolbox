@@ -26,9 +26,9 @@ export class HttpError extends Error {
 }
 
 /**
- * Type for the body to send with an HTTP request. Can either be a `BodyInit` value
- * that will be passed directly to the Fetch API, or a plain JavaScript object that
- * will be JSON-stringified.
+ * Type for the body to send with an HTTP request. Can either be a `BodyInit` value that
+ * will be passed directly to the Fetch API, or a plain JavaScript object that will be
+ * JSON-stringified.
  */
 export type HttpRequestBody = BodyInit | JsonObject;
 
@@ -44,8 +44,8 @@ export type HttpResponseBody = string | JsonObject;
 export interface HttpRequestConfig<Body extends HttpRequestBody = HttpRequestBody>
   extends Init {
   /**
-   * The body to send with the HTTP request. Can be a `BodyInit` value that will be
-   * passed to the `Fetch API`, or a plain JavaScript object that will be stringified as JSON.
+   * The body to send with the HTTP request. Can be a `BodyInit` value that will be passed
+   * to the `Fetch API`, or a plain JavaScript object that will be stringified as JSON.
    */
   body?: Body;
   /**
@@ -75,12 +75,18 @@ export type RequestConfigByHttpClient<
  * Generic class for making HTTP requests or instantiate a custom `HttpClient`.
  */
 export class HttpClient<Client extends HttpClientCtor> {
-  /** The request body type for requests made by this client. */
+  /**
+   * The request body type for requests made by this client.
+   */
   declare static payload: HttpRequestBody;
-  /** The response body type for responses from requests made by this client. */
+  /**
+   * The response body type for responses from requests made by this client.
+   */
   declare static response: HttpResponseBody;
-  /** Default HTTP request configuration for this client. */
-  static defaults: GetHttpRequestConfig<SafeAny> = {};
+  /**
+   * Default HTTP request configuration for this client.
+   */
+  static defaults: HttpRequestConfig<SafeAny> = {};
 
   /**
    * Creates a new instance of the HttpClient subclass.
@@ -253,7 +259,7 @@ export class HttpClient<Client extends HttpClientCtor> {
    *          otherwise as text.
    */
   public post(config: RequestConfigByHttpClient<Client, "POST">) {
-    return HttpClient.post(this.getMergedConfig(config));
+    return this.constructor.post(this.getMergedConfig(config));
   }
 }
 
@@ -287,12 +293,12 @@ type HttpRequestConfigUnion<C extends HttpClientCtor> = HttpRequestConfigMap<
 
 type FetchArgs = [string | URL, RequestInit];
 
-interface HttpClientCtor {
+export interface HttpClientCtor {
   new (...args: SafeAny[]): this["prototype"];
   payload: HttpRequestBody;
   prototype: SafeAny;
   defaults: RequestConfigByHttpClient<this, "ANY">;
-  response: string | JsonObject;
+  response: SafeAny;
   request<T extends HttpClientCtor>(
     this: T,
     config: RequestConfigByHttpClient<this, "ANY">,
