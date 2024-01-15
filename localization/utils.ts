@@ -17,8 +17,8 @@ const RubyTemplate = new toolkit.Template(
 );
 
 /**
- * Mapping of language codes to functions that can generate
- * rich text annotations for words in that language.
+ * Mapping of language codes to functions that can generate rich text annotations for
+ * words in that language.
  */
 export const RichTextByLanguageCode = {
   [LanguageCode.EN]: passthrough,

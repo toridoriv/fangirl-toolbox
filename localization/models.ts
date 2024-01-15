@@ -2,6 +2,8 @@ import { eld, z } from "@dependencies";
 import { LanguageSchema } from "./schemas.ts";
 import { RichTextByLanguageCode } from "./utils.ts";
 import { Model } from "@base";
+import { LanguageCode, LanguageName } from "./enums.ts";
+import { TranslatorClient } from "./clients.ts";
 
 /**
  * Type definition for the properties of a LocalizedText object.
@@ -61,5 +63,75 @@ export class LocalizedText extends Model<typeof LocalizedText> {
     this.rich = await RichTextByLanguageCode[this.language.code](this.raw);
 
     return this;
+  }
+}
+
+const LocalizedTextModelSchema = z
+  .string()
+  .min(1)
+  .trim()
+  .transform(LocalizedText.fromString)
+  .or(LocalizedText.schema.transform(Model.parseFromModel(LocalizedText)));
+
+/**
+ * Type definition for the properties of a TranslatedText object.
+ */
+export type TranslatableTextProperties = z.output<typeof TranslatableText.schema>;
+
+/**
+ * Type definition for the input properties when creating a TranslatableText object.
+ */
+export type TranslatableTextInput = z.input<typeof TranslatableText.schema>;
+
+export interface TranslatableText extends TranslatableTextProperties {}
+
+export class TranslatableText extends Model<typeof TranslatableText> {
+  static schema = z.object({
+    original: LocalizedTextModelSchema,
+    translations: z.array(LocalizedTextModelSchema).default([]),
+  });
+
+  static fromString(value: string) {
+    return new TranslatableText({
+      original: value,
+    });
+  }
+
+  async setEnglishTranslation(translator: TranslatorClient) {
+    let en = this.getTranslationByCode(LanguageCode.EN);
+
+    if (en) return this;
+
+    en = LocalizedText.fromString(await translator.translate(this.original.raw));
+
+    this.translations.push(en);
+  }
+
+  /**
+   * Gets a translation by language code.
+   *
+   * @param code - The language code to look for.
+   * @returns The translated text or null if not found.
+   */
+  public getTranslationByCode(code: LanguageCode) {
+    const result = this.translations.find(
+      (translation) => translation.language.code === code,
+    );
+
+    return result || null;
+  }
+
+  /**
+   * Gets a translation by language name.
+   *
+   * @param name - The language name to look for.
+   * @returns The translated text or null if not found.
+   */
+  public getTranslationByName(name: LanguageName) {
+    const result = this.translations.find(
+      (translation) => translation.language.name === name,
+    );
+
+    return result || null;
   }
 }

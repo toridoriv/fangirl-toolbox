@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@dependencies";
 import { LANGUAGE_BY_CODE, LanguageCode } from "./enums.ts";
 import { LANGUAGE_BY_NAME, LanguageName } from "./enums.ts";
 import { lazyPick } from "@base";
@@ -18,9 +18,13 @@ export const LanguageNameSchema = z.nativeEnum(LanguageName);
  */
 export const LanguageSchema = z
   .object({
-    /** A two-letter language code following ISO 639-1 standard. */
+    /**
+     * A two-letter language code following ISO 639-1 standard.
+     */
     code: LanguageCodeSchema,
-    /** The English name of the language. */
+    /**
+     * The English name of the language.
+     */
     name: LanguageNameSchema,
   })
   .or(LanguageCodeSchema.transform(lazyPick(LANGUAGE_BY_CODE)))
