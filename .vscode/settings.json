@@ -13,7 +13,12 @@
   },
   "deno.cacheOnSave": true,
   "deno.config": "./deno.json",
-  "deno.disablePaths": ["./var", "./prettier.config.js"],
+  "deno.disablePaths": [
+    "./var/",
+    "./prettier.config.js",
+    "./plugins/prettier/",
+    "./node_modules/"
+  ],
   "deno.enable": true,
   "deno.lint": true,
   "editor.formatOnSave": true,
@@ -25,5 +30,6 @@
   "typescript.preferences.quoteStyle": "double",
   "typescript.suggest.completeJSDocs": true,
   "typescript.suggest.jsdoc.generateReturns": true,
-  "prettier.enable": true
+  "prettier.enable": true,
+  "prettier.configPath": "./prettier.config.js"
 }

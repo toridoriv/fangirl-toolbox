@@ -12,7 +12,7 @@ export default {
   useTabs: false,
   endOfLine: "lf",
   bracketSameLine: true,
-  plugins: ["@homer0/prettier-plugin-jsdoc"],
+  plugins: ["./plugins/prettier/jsdoc.cjs"],
   jsdocEnsureDescriptionsAreSentences: true,
   jsdocPrintWidth: 90,
   jsdocTagsOrder: ["example", "template", "param", "returns", "namespace", "typedef"],
@@ -20,6 +20,7 @@ export default {
   jsdocUseTypeScriptTypesCasing: false,
   parser: "typescript",
   jsdocMinSpacesBetweenNameAndDescription: 1,
+  jsdocExperimentalFormatCommentsWithoutTags: true,
 };
 
 /**
