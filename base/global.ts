@@ -99,4 +99,18 @@ declare global {
         ? T[K]
         : never;
   }>;
+
+  /**
+   * Excludes the first element from a tuple type.
+   *
+   * @example
+   *
+   * ```typescript
+   * type A = ExcludeFirstFromList<[1, 2, 3]>; // [2, 3]
+   * ```
+   *
+   */
+  export type ExcludeFirstFromList<T> = T extends [infer F, ...infer Rest]
+    ? Rest
+    : unknown[];
 }
