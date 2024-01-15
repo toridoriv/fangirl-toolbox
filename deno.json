@@ -2,13 +2,12 @@
   "compilerOptions": {
     "checkJs": true,
     "noErrorTruncation": true,
-    "noStrictGenericChecks": true,
-    "suppressExcessPropertyErrors": true,
     "strictFunctionTypes": true,
     "lib": [
-      "deno.window",
-      "deno.worker"
-    ]
+      "deno.window"
+    ],
+    "exactOptionalPropertyTypes": false,
+    "strictPropertyInitialization": false
   },
   "fmt": {
     "indentWidth": 2,
@@ -24,17 +23,15 @@
     "@base": "./base/mod.ts",
     "@localization": "./localization/mod.ts",
     "@package": "./package.json",
-    "kuroshiro": "https://esm.sh/@sglkc/kuroshiro@1.0.1?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
+    "kuroshiro": "npm:@sglkc/kuroshiro@1.0.1",
     "eld": "https://esm.sh/eld@1.0.0?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
-    "kuroshiro-analyzer-kuromoji": "https://esm.sh/@sglkc/kuroshiro-analyzer-kuromoji@1.0.1?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
+    "kuroshiro-analyzer-kuromoji": "npm:@sglkc/kuroshiro-analyzer-kuromoji@1.0.1",
     "natural": "npm:natural@6.10.4",
-    "prettier": "https://esm.sh/prettier@3.2.1?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
-    "prettier-plugin-jsdoc": "https://esm.sh/@homer0/prettier-plugin-jsdoc@8.0.0?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
+    "openai": "npm:openai",
     "std/": "https://deno.land/std@0.212.0/",
     "toolkit": "https://cdn.jsdelivr.net/gh/toridoriv/toolkit@main/index.js",
     "translit-rus-eng": "https://esm.sh/translit-rus-eng@1.0.8?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
-    "zod": "https://deno.land/x/zod@v3.22.4/mod.ts",
-    "webworker-threads": "https://esm.sh/web-threads@1.0.135?bundle-deps&target=deno&keep-names&deno-std=0.212.0"
+    "zod": "https://deno.land/x/zod@v3.22.4/mod.ts"
   },
   "lint": {
     "rules": {
