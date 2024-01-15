@@ -13,7 +13,7 @@
   },
   "deno.cacheOnSave": true,
   "deno.config": "./deno.json",
-  "deno.disablePaths": ["./var"],
+  "deno.disablePaths": ["./var", "./prettier.config.js"],
   "deno.enable": true,
   "deno.lint": true,
   "editor.formatOnSave": true,
