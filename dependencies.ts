@@ -5,3 +5,4 @@ export { z } from "zod";
 export * as toolkit from "toolkit";
 export { default as transliterateRussian } from "translit-rus-eng";
 export { default as natural } from "natural";
+export { deepMerge } from "std/collections/deep_merge.ts";
