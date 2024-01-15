@@ -1,3 +1,5 @@
+import { deepMerge as denoDeepMerge } from "@dependencies";
+
 /**
  * Picks a specific property from an object and returns its value.
  *
@@ -35,4 +37,16 @@ export function lazyPick<O>(obj: O) {
   return function pick<K extends keyof O>(key: K) {
     return obj[key];
   };
+}
+
+/**
+ * Deep merges two objects together to create a new object.
+ *
+ * @param record - The object to merge into.
+ * @param other  - The other object to merge.
+ * @returns A new object with the merged contents.
+ */
+export function deepMerge<T, U>(record: T, other: U): Merge<T, U> {
+  // @ts-ignore: ¯\_(ツ)_/¯
+  return denoDeepMerge(record, other);
 }
