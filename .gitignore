@@ -1,2 +1,6 @@
+# 💬 Lock files.
 deno.lock
 package-lock.json
+
+# 💬 Automatically generated data.
+var/data/**/*.json
