@@ -7,7 +7,7 @@ loadFns();
 
 function customSplitText(text, length) {
   if (text.includes("@link")) {
-    return [text];
+    return text.split("\n");
   }
 
   return splitText(text, length);

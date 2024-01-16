@@ -21,6 +21,7 @@ export default {
   parser: "typescript",
   jsdocMinSpacesBetweenNameAndDescription: 1,
   jsdocExperimentalFormatCommentsWithoutTags: true,
+  jsdocPluginExtended: true,
 };
 
 /**
