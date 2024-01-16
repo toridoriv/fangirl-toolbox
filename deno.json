@@ -27,11 +27,11 @@
     "eld": "https://esm.sh/eld@1.0.0?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
     "kuroshiro-analyzer-kuromoji": "npm:@sglkc/kuroshiro-analyzer-kuromoji@1.0.1",
     "natural": "npm:natural@6.10.4",
-    "openai": "npm:openai",
     "std/": "https://deno.land/std@0.212.0/",
     "toolkit": "https://cdn.jsdelivr.net/gh/toridoriv/toolkit@main/index.js",
     "translit-rus-eng": "https://esm.sh/translit-rus-eng@1.0.8?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
-    "zod": "https://deno.land/x/zod@v3.22.4/mod.ts"
+    "zod": "https://deno.land/x/zod@v3.22.4/mod.ts",
+    "cheerio": "npm:@toridoriv/cheerio@1.0.3"
   },
   "lint": {
     "rules": {
