@@ -28,7 +28,7 @@ export class TranslatorClient extends HttpClient<typeof TranslatorClient> {
    *
    * @param systemInstructions - Array of instruction strings for the translator model.
    * @remarks The first sentence of the instructions will always be *"I want you to
-   *          act as a translator"*. Try to continue the sentence naturally with your
+   *          act as a translator."*. Try to continue the sentence naturally with your
    *          custom instructions.
    */
   public constructor(systemInstructions: string[]) {
