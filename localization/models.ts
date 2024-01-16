@@ -50,7 +50,7 @@ export class LocalizedText extends Model<typeof LocalizedText> {
   static fromString(value: string) {
     return new LocalizedText({
       raw: value,
-      language: eld.detect(value).language,
+      language: eld.detect(value).language || LanguageCode.XX,
     });
   }
 
@@ -66,7 +66,7 @@ export class LocalizedText extends Model<typeof LocalizedText> {
   }
 }
 
-const LocalizedTextModelSchema = z
+export const LocalizedTextModelSchema = z
   .string()
   .min(1)
   .trim()

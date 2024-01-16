@@ -29,6 +29,7 @@ export const RichTextByLanguageCode = {
   [LanguageCode.KO]: passthrough,
   [LanguageCode.PT]: passthrough,
   [LanguageCode.RU]: russian,
+  [LanguageCode.XX]: passthrough,
   [LanguageCode.ZH]: passthrough,
 };
 

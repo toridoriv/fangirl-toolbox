@@ -8,6 +8,7 @@ export enum LanguageCode {
   KO = "ko",
   PT = "pt",
   RU = "ru",
+  XX = "xx",
   ZH = "zh",
 }
 
@@ -21,6 +22,7 @@ export enum LanguageName {
   KOREAN = "Korean",
   PORTUGUESE = "Portuguese",
   RUSSIAN = "Russian",
+  UNDETERMINED = "Undetermined",
   CHINESE = "Chinese",
 }
 
@@ -57,6 +59,10 @@ export const LANGUAGE_BY_CODE = {
   [LanguageCode.RU]: Object.freeze({
     code: LanguageCode.RU,
     name: LanguageName.RUSSIAN,
+  }),
+  [LanguageCode.XX]: Object.freeze({
+    code: LanguageCode.XX,
+    name: LanguageName.UNDETERMINED,
   }),
   [LanguageCode.ZH]: Object.freeze({
     code: LanguageCode.ZH,
@@ -97,6 +103,10 @@ export const LANGUAGE_BY_NAME = {
   [LanguageName.RUSSIAN]: Object.freeze({
     code: LanguageCode.RU,
     name: LanguageName.RUSSIAN,
+  }),
+  [LanguageName.UNDETERMINED]: Object.freeze({
+    code: LanguageCode.XX,
+    name: LanguageName.UNDETERMINED,
   }),
   [LanguageName.CHINESE]: Object.freeze({
     code: LanguageCode.ZH,
