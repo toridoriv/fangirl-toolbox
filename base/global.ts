@@ -32,14 +32,21 @@ declare global {
   export type JsonValue = null | boolean | number | string | JsonValue[] | JsonObject;
 
   /**
-   * Instead of adding a `disable` directive, use this value
-   * to indicate that an any type is expected that way purposely.
+   * Instead of adding a `disable` directive, use this value to indicate that an any type
+   * is expected that way purposely.
    */
   // deno-lint-ignore no-explicit-any
   export type SafeAny = any;
 
+  /**
+   * Type alias for arrays that can contain any value.
+   */
   export type AnyArray = Array<SafeAny>;
 
+  /**
+   * Constructs a new type from type T where the properties in R are made required.
+   * All other properties remain unchanged from T.
+   */
   export type SetRequired<T, R extends keyof T> = Required<Pick<T, R>> & Omit<T, R>;
 
   /**
@@ -67,7 +74,7 @@ declare global {
       : false;
 
   /**
-   * Type alias for native browser types and objects
+   * Type alias for native browser types and objects.
    */
   export type Native =
     | toolkit.Primitive
@@ -75,6 +82,7 @@ declare global {
     | Map<SafeAny, SafeAny>
     | Set<SafeAny>
     | AnyArray
+    // deno-lint-ignore ban-types
     | Function
     | Headers
     | Iterable<SafeAny>
@@ -83,7 +91,8 @@ declare global {
 
   /**
    * Merge properties from two object types T and U into a new object type.
-   * For keys that exist in both T and U, recursively merge if the value types are objects.
+   * For keys that exist in both T and U, recursively merge if the value types are
+   * objects.
    * Otherwise take the value type from U if the key exists in U, or from T if only in T.
    */
   export type Merge<T, U> = Expand<{
@@ -113,4 +122,35 @@ declare global {
   export type ExcludeFirstFromList<T> = T extends [infer F, ...infer Rest]
     ? Rest
     : unknown[];
+
+  /**
+   * Constructs a new type with the properties in K set to optional.
+   * All other properties are required.
+   */
+  export type SetPartial<T, K extends keyof T> = Expand<Partial<Pick<T, K>> & Omit<T, K>>;
+
+  /**
+   * Gets the common keys between two types T and U.
+   */
+  export type GetCommonKeys<
+    T,
+    U,
+    KeysOfU = toolkit.UnionToTuple<keyof U>,
+    Cache extends AnyArray = [],
+  > = KeysOfU extends []
+    ? Cache
+    : KeysOfU extends [infer F, ...infer R]
+      ? F extends keyof T
+        ? GetCommonKeys<T, U, R, [...Cache, F]>
+        : GetCommonKeys<T, U, R, Cache>
+      : never;
+
+  /**
+   * Constructs a new type with the properties in C set to optional.
+   * All other properties remain unchanged.
+   */
+  export type PartialDiff<T, U, C extends (keyof T)[] = GetCommonKeys<T, U>> = SetPartial<
+    T,
+    C[number]
+  >;
 }
