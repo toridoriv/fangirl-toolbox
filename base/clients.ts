@@ -34,11 +34,11 @@ export class HttpClient<Client extends HttpClient.HttpClientCtor> {
   /**
    * The request body type for requests made by this client.
    */
-  declare static payload: HttpClient.AnyRequestBody;
+  declare static payload: SafeAny;
   /**
    * The response body type for responses from requests made by this client.
    */
-  declare static response: HttpClient.AnyResponseBody;
+  declare static response: SafeAny;
   /**
    * Default HTTP request configuration for this client.
    */
@@ -263,6 +263,8 @@ export namespace HttpClient {
     url?: string | URL;
   }
 
+  export type Defaults<C extends HttpClientCtor> = RequestConfigByClient<C>;
+
   /**
    * Type for HTTP request configuration specific to an HttpClient subclass,
    * mapping the request method to the expected request body and response types.
@@ -270,23 +272,27 @@ export namespace HttpClient {
   export type RequestConfigByClient<
     C extends HttpClientCtor,
     M extends keyof HttpRequestConfigMap = "ANY",
-  > = HttpRequestConfigMap<C["payload"]>[M];
+  > = HttpRequestConfigMap<RequestBody<C>>[M];
 
   /**
    * Utility type to obtain the response body of a {@link HttpClient}.
    */
-  export type ResponseBody<C extends HttpClientCtor> = C["response"];
+  export type ResponseBody<C extends HttpClientCtor> = C["response"] extends BodyInit
+    ? C["response"]
+    : ToObject<C["response"]>;
 
   /**
    * Utility type to obtain the request body of a {@link HttpClient}.
    */
-  export type RequestBody<C extends HttpClientCtor> = C["payload"];
+  export type RequestBody<C extends HttpClientCtor> = C["payload"] extends BodyInit
+    ? C["payload"]
+    : ToObject<C["payload"]>;
 
   export type FetchArgs = [string | URL, RequestInit];
 
   export interface HttpClientCtor {
     new (...args: SafeAny[]): this["prototype"];
-    payload: AnyRequestBody;
+    payload: SafeAny;
     prototype: SafeAny;
     defaults: RequestConfigByClient<this, "ANY">;
     response: SafeAny;
@@ -332,5 +338,236 @@ export namespace HttpClient {
     TRACE: GetHttpRequestConfig<Body, "method">;
   }
 
+  // #endregion PRIVATE
+}
+
+/**
+ * An HTTP client for making requests to the OpenAI API. Extends the HttpClient class with
+ * OpenAI-specific functionality.
+ */
+export class OpenAiClient extends HttpClient<typeof OpenAiClient> {
+  declare static payload: OpenAiClient.AnyPayload | OpenAiClient.ChatCompletion.Payload;
+  declare static response:
+    | OpenAiClient.AnyResponse
+    | OpenAiClient.ChatCompletion.Response;
+
+  /**
+   * The default options for requests. Sets the authorization header,
+   * content type, API URL, and default model.
+   */
+  static defaults: HttpClient.Defaults<typeof OpenAiClient> = {
+    headers: {
+      "authorization": `Bearer ${Deno.env.get("OPENAI_SECRET_KEY")}`,
+      "content-type": "application/json",
+    },
+    url: "https://api.openai.com",
+    body: {
+      model: "gpt-3.5-turbo-16k",
+    },
+  };
+
+  /**
+   * Creates a chat completion request.
+   *
+   * @param messages - The messages to include in the chat completion request.
+   * @param options  - Additional options like temperature and max choices.
+   * @returns A promise resolving to the API response.
+   */
+  public createChatCompletion(
+    messages: OpenAiClient.ChatCompletion.Message[],
+    options: OpenAiClient.ChatCompletion.Options = {},
+  ) {
+    return this.post({
+      body: {
+        messages,
+        temperature: options.temperature || 0,
+        n: options.n || 1,
+      } as OpenAiClient.ChatCompletion.Payload,
+      endpoint: "/v1/chat/completions",
+    }) as Promise<OpenAiClient.ChatCompletion.Response>;
+  }
+}
+
+export namespace OpenAiClient {
+  export interface AnyPayload {
+    /**
+     * ID of the model to use.
+     *
+     * @see {@link https://platform.openai.com/docs/models/model-endpoint-compatibility Model endpoint compatibility}
+     */
+    model: Model;
+  }
+
+  export interface AnyResponse {
+    /**
+     * The model used for the chat completion.
+     */
+    model: Model;
+  }
+
+  export namespace ChatCompletion {
+    export type Options = Pick<Payload, "n" | "temperature">;
+
+    export interface Payload extends AnyPayload {
+      /**
+       * A list of messages comprising the conversation so far.
+       */
+      messages: Message[];
+      /**
+       * Sampling temperature to use, between `0` and `2`. Higher values like `0.8` will
+       * make the output more random, while lower values like `0.2` will make it more
+       * focused and deterministic.
+       */
+      temperature?: number;
+      /**
+       * How many chat completion choices to generate for each input message. Note that
+       * you will be charged based on the number of generated tokens across all of the
+       * choices.
+       */
+      n?: number;
+      /**
+       * Number between -2.0 and 2.0. Positive values penalize new tokens based on their
+       * existing frequency in the text so far, decreasing the model's likelihood to
+       * repeat the same line verbatim.
+       *
+       * @see {@link https://platform.openai.com/docs/guides/text-generation/parameter-details}
+       */
+      frequency_penalty?: number;
+      /**
+       * Number between -2.0 and 2.0. Positive values penalize new tokens based on whether
+       * they appear in the text so far, increasing the model's likelihood to talk about
+       * new topics.
+       *
+       * @see {@link https://platform.openai.com/docs/guides/text-generation/parameter-details More}
+       */
+      presence_penalty?: number;
+    }
+
+    export interface Response extends AnyResponse {
+      /**
+       * A unique identifier for the chat completion.
+       */
+      id: string;
+      /**
+       * The object type.
+       */
+      object: "chat.completion";
+      /**
+       * The Unix timestamp (in seconds) of when the chat completion was created.
+       */
+      created: number;
+      /**
+       * This fingerprint represents the backend configuration that the model runs with.
+       *
+       * Can be used in conjunction with the seed request parameter to understand when
+       * backend changes have been made that might impact determinism.
+       */
+      system_fingerprint: string;
+      /**
+       * A list of chat completion choices. Can be more than one if {@link Payload.n}
+       * is greater than `1`.
+       */
+      choices: Choice[];
+      /**
+       * Usage statistics for the completion request.
+       */
+      usage: Usage;
+    }
+
+    export type Choice = {
+      /**
+       * The index of the choice in the list of choices.
+       */
+      index: number;
+      /**
+       * The reason the model stopped generating tokens.
+       *
+       * @see {@link FinishReason} for more details.
+       */
+      finish_reason:
+        | FinishReason.ContentFilter
+        | FinishReason.Length
+        | FinishReason.Stop
+        | FinishReason.ToolCalls;
+      /**
+       * A chat completion message generated by the model.
+       */
+      message: Message;
+    };
+
+    export type Message = SystemMessage | UserMessage;
+
+    export type SystemMessage = GenericMessage<"system">;
+
+    export type Usage = {
+      /**
+       * Number of tokens in the prompt.
+       */
+      prompt_tokens: number;
+      /**
+       * Total number of tokens used in the request (prompt + completion).
+       */
+      completion_tokens: number;
+      /**
+       * Number of tokens in the generated completion.
+       */
+      total_tokens: number;
+    };
+
+    export type UserMessage = GenericMessage<"user">;
+
+    type GenericMessage<T extends string> = {
+      /**
+       * The contents of the message.
+       */
+      content: string;
+      /**
+       * The role of the message author.
+       */
+      role: T;
+      /**
+       * An optional name for the participant. Provides the model information to
+       * differentiate between participants of the same role.
+       */
+      name?: string;
+    };
+  }
+
+  /**
+   * Set of models with different capabilities and price points.
+   *
+   * @see {@link https://platform.openai.com/docs/models Models} for more information.
+   */
+  export type Model =
+    | "gpt-4"
+    | "gpt-4-1106-preview"
+    | "gpt-4-vision-preview"
+    | "gpt-4-32k"
+    | "gpt-3.5-turbo"
+    | "gpt-3.5-turbo-16k"
+    | "gpt-3.5-turbo";
+
+  // #region PRIVATE
+  namespace FinishReason {
+    /**
+     * The content was omitted due to a flag from the API content filters.
+     */
+    export type ContentFilter = "content_filter";
+
+    /**
+     * The maximum number of tokens specified in the request was reached.
+     */
+    export type Length = "length";
+
+    /**
+     * The model has hit a natural stop point or a provided stop sequence.
+     */
+    export type Stop = "stop";
+
+    /**
+     * The model called a tool.
+     */
+    export type ToolCalls = "tool_calls";
+  }
   // #endregion PRIVATE
 }
