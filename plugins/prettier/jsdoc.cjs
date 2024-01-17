@@ -6,7 +6,7 @@ const { splitText } = require("@homer0/prettier-plugin-jsdoc/src/fns/splitText")
 loadFns();
 
 function customSplitText(text, length) {
-  if (text.includes("@link")) {
+  if (text.includes("@link") || text.includes("@typedef")) {
     return text.split("\n");
   }
 
