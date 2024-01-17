@@ -1,3 +1,4 @@
+import { DeepMergeOptions } from "@dependencies";
 import { deepMerge as denoDeepMerge } from "@dependencies";
 
 /**
@@ -42,11 +43,16 @@ export function lazyPick<O>(obj: O) {
 /**
  * Deep merges two objects together to create a new object.
  *
- * @param record - The object to merge into.
- * @param other  - The other object to merge.
+ * @param record  - The object to merge into.
+ * @param other   - The other object to merge.
+ * @param options - Define here alternative merge strategies.
  * @returns A new object with the merged contents.
  */
-export function deepMerge<T, U>(record: T, other: U): Merge<T, U> {
+export function deepMerge<T, U>(
+  record: T,
+  other: U,
+  options?: DeepMergeOptions,
+): Merge<T, U> {
   // @ts-ignore: ¯\_(ツ)_/¯
-  return denoDeepMerge(record, other);
+  return denoDeepMerge(record, other, options);
 }
