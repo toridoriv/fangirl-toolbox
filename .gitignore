@@ -4,3 +4,4 @@ package-lock.json
 
 # 💬 Automatically generated data.
 var/data/**/*.json
+coverage
