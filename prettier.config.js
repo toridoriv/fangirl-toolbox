@@ -1,5 +1,7 @@
+// @ts-check
+
 /**
- * @type {PrettierConfig & Partial<PJPOptions>}
+ * @type {PrettierConfig & Partial<PJPOptions> & SortImportsConfig}
  */
 export default {
   trailingComma: "all",
@@ -12,7 +14,7 @@ export default {
   useTabs: false,
   endOfLine: "lf",
   bracketSameLine: true,
-  plugins: ["./plugins/prettier/jsdoc.cjs"],
+  plugins: ["./plugins/prettier/jsdoc.cjs", "@trivago/prettier-plugin-sort-imports"],
   jsdocEnsureDescriptionsAreSentences: true,
   jsdocPrintWidth: 90,
   jsdocTagsOrder: ["example", "template", "param", "returns", "namespace", "typedef"],
@@ -22,10 +24,31 @@ export default {
   jsdocMinSpacesBetweenNameAndDescription: 1,
   jsdocExperimentalFormatCommentsWithoutTags: true,
   jsdocPluginExtended: true,
+  importOrder: [
+    "^./global.ts$|^@global$",
+    "<THIRD_PARTY_MODULES>|^@dependencies$|^@dev-dependencies$",
+    "^@base$",
+    "^@fanfictions$",
+    "^@localization$",
+    "^[./]",
+  ],
+  importOrderSeparation: true,
+  overrides: [
+    {
+      files: "*.test.ts",
+      options: {
+        printWidth: 120,
+      },
+    },
+  ],
 };
 
 /**
  * @typedef {import("prettier").Config} PrettierConfig
+ */
+
+/**
+ * @typedef {import("@trivago/prettier-plugin-sort-imports").PluginConfig} SortImportsConfig
  */
 
 /**

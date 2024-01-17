@@ -50,6 +50,13 @@
   },
   "devDependencies": {
     "@homer0/prettier-plugin-jsdoc": "^8.0.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "prettier": "^3.2.1"
+  },
+  "scripts": {
+    "pretest:coverage": "rm -rf coverage",
+    "test:coverage": "deno test --allow-all --coverage=coverage",
+    "posttest:coverage": "deno coverage --detailed && deno coverage",
+    "test": "deno test --allow-all"
   }
 }

@@ -1,4 +1,4 @@
-import type { z } from "zod";
+import type { z } from "@dependencies";
 
 /**
  * Represents the constructor of a base model.

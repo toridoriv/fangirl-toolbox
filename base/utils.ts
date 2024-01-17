@@ -1,5 +1,4 @@
-import { DeepMergeOptions } from "@dependencies";
-import { deepMerge as denoDeepMerge } from "@dependencies";
+import { DeepMergeOptions, deepMerge as denoDeepMerge } from "@dependencies";
 
 /**
  * Picks a specific property from an object and returns its value.
