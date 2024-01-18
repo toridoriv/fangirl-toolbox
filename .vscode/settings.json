@@ -31,5 +31,7 @@
   "typescript.suggest.completeJSDocs": true,
   "typescript.suggest.jsdoc.generateReturns": true,
   "prettier.enable": true,
+  "deno.documentPreloadLimit": 8000,
+  "prettier.prettierPath": "./node_modules/prettier/index.cjs",
   "prettier.configPath": "./prettier.config.js"
 }

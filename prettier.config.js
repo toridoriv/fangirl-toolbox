@@ -14,7 +14,7 @@ export default {
   useTabs: false,
   endOfLine: "lf",
   bracketSameLine: true,
-  plugins: ["./plugins/prettier/jsdoc.cjs", "@trivago/prettier-plugin-sort-imports"],
+  plugins: ["./plugins/prettier/all.cjs"],
   jsdocEnsureDescriptionsAreSentences: true,
   jsdocPrintWidth: 90,
   jsdocTagsOrder: ["example", "template", "param", "returns", "namespace", "typedef"],
