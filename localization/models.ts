@@ -1,9 +1,10 @@
 import { eld, z } from "@dependencies";
+
+import { Model } from "@base";
+
+import { LanguageCode, LanguageName } from "./enums.ts";
 import { LanguageSchema } from "./schemas.ts";
 import { RichTextByLanguageCode } from "./utils.ts";
-import { Model } from "@base";
-import { LanguageCode, LanguageName } from "./enums.ts";
-import { TranslatorClient } from "./clients.ts";
 
 /**
  * Type definition for the properties of a LocalizedText object.
@@ -97,7 +98,9 @@ export class TranslatableText extends Model<typeof TranslatableText> {
     });
   }
 
-  async setEnglishTranslation(translator: TranslatorClient) {
+  async setEnglishTranslation(translator: {
+    translate: (value: string) => Promise<string>;
+  }) {
     let en = this.getTranslationByCode(LanguageCode.EN);
 
     if (en) return this;
