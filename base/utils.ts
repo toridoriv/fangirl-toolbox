@@ -1,4 +1,4 @@
-import { DeepMergeOptions, deepMerge as denoDeepMerge } from "@dependencies";
+import { DeepMergeOptions, deepMerge } from "@dependencies";
 
 /**
  * Picks a specific property from an object and returns its value.
@@ -40,18 +40,19 @@ export function lazyPick<O>(obj: O) {
 }
 
 /**
- * Deep merges two objects together to create a new object.
+ * Performs a deep merge of two objects without type safety checks.
+ * **Use it at your own risk.**
  *
- * @param record  - The object to merge into.
- * @param other   - The other object to merge.
- * @param options - Define here alternative merge strategies.
- * @returns A new object with the merged contents.
+ * @param record  - The first object.
+ * @param other   - The second object. Its properties will replace the ones from the
+ *                first one.
+ * @param options - Options to configure the merge behavior.
+ * @returns The merged object, cast to the generic type T.
  */
-export function deepMerge<T, U>(
-  record: T,
-  other: U,
+export function unsafeDeepMerge<T>(
+  record: SafeAny,
+  other: SafeAny,
   options?: DeepMergeOptions,
-): Merge<T, U> {
-  // @ts-ignore: ¯\_(ツ)_/¯
-  return denoDeepMerge(record, other, options);
+) {
+  return deepMerge(record, other, options) as unknown as T;
 }

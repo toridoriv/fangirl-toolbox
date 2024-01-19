@@ -1,7 +1,9 @@
-import { MockFetch, expect, faker } from "@dev-dependencies";
-import { HttpClient, HttpError } from "./clients.ts";
-import { STATUS_TEXT } from "@dev-dependencies";
 import { STATUS_CODE } from "std/http/status.ts";
+
+import { MockFetch, expect, faker } from "@dev-dependencies";
+import { STATUS_TEXT } from "@dev-dependencies";
+
+import { HttpClient, HttpError } from "./clients.ts";
 
 const mockFetch = new MockFetch();
 
@@ -11,22 +13,8 @@ Deno.test("HttpClient.create initializes a new instance", () => {
   expect(client).to.be.instanceof(HttpClient);
 });
 
-Deno.test("HttpClient.getFetchArgs throws an error if the url in the config is not defined", () => {
-  expect(HttpClient.getFetchArgs.bind(HttpClient, {})).to.throw(TypeError, "The url in RequestConfig is required.");
-});
-
-Deno.test("HttpClient.getFetchArgs correctly build the arguments expected by global.fetch", () => {
-  const configObjUrl: HttpClient.BaseRequestConfig = { url: new URL("https://example.org/") };
-  const configStrUrl: HttpClient.BaseRequestConfig = { url: "https://example.org/" };
-  const configJson: HttpClient.BaseRequestConfig = {
-    ...configStrUrl,
-    body: { song: "Smooth Criminal" },
-    headers: { "content-type": "application/json" },
-  };
-
-  expect(HttpClient.getFetchArgs(configObjUrl)[0]).to.equal("https://example.org/");
-  expect(HttpClient.getFetchArgs(configStrUrl)[0]).to.equal("https://example.org/");
-  expect(HttpClient.getFetchArgs(configJson)[1].body).to.equal(JSON.stringify(configJson.body));
+Deno.test("HttpClient.request throws an error if the url in the config is not defined", () => {
+  expect(HttpClient.request({})).to.be.rejectedWith(TypeError, "The url in RequestConfig is required.");
 });
 
 Deno.test("HttpClient.request sends a HTTP request with the given config", async () => {
@@ -86,4 +74,38 @@ Deno.test("HttpClient.request throws an error when a request fails", async () =>
 
   expect(mockScope.metadata.calls).to.be.equal(1);
   expect(failed).to.be.true;
+});
+
+Deno.test("HttpClient.get sends a GET HTTP request", async () => {
+  const url = "https://example.com/text";
+  const mockedResponse = "Song: In the Heights";
+
+  const scope = mockFetch
+    .intercept(url, {
+      method: "GET",
+    })
+    .response(mockedResponse, { status: 200 });
+
+  const response = await HttpClient.get({ url });
+
+  expect(scope.metadata.calls).to.equal(1);
+  expect(response).to.equal(mockedResponse);
+});
+
+Deno.test("HttpClient.get sends a POST HTTP request", async () => {
+  const url = "https://example.com/text";
+  const payload = "Artist: Lin Manuel Miranda";
+  const mockedResponse = "Song: In the Heights";
+
+  const scope = mockFetch
+    .intercept(url, {
+      method: "POST",
+      body: payload,
+    })
+    .response(mockedResponse, { status: 200 });
+
+  const response = await HttpClient.post({ url, body: payload });
+
+  expect(scope.metadata.calls).to.equal(1);
+  expect(response).to.equal(mockedResponse);
 });
