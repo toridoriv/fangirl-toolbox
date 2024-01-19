@@ -1,7 +1,9 @@
 import { z } from "@dependencies";
+
+import { lazyPick } from "@base";
+
 import { LANGUAGE_BY_CODE, LanguageCode } from "./enums.ts";
 import { LANGUAGE_BY_NAME, LanguageName } from "./enums.ts";
-import { lazyPick } from "@base";
 
 /**
  * Schema for language codes following `ISO 639-1` standard.

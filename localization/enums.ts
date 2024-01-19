@@ -1,4 +1,6 @@
-/** Represents the code of a language available in the application. */
+/**
+ * Represents the code of a language available in the application.
+ */
 export enum LanguageCode {
   EN = "en",
   ES = "es",
@@ -12,7 +14,9 @@ export enum LanguageCode {
   ZH = "zh",
 }
 
-/** Represents the name of a language available in the application. */
+/**
+ * Represents the name of a language available in the application.
+ */
 export enum LanguageName {
   ENGLISH = "English",
   SPANISH = "Spanish",
@@ -26,7 +30,9 @@ export enum LanguageName {
   CHINESE = "Chinese",
 }
 
-/** Mapping between language codes and their corresponding language information. */
+/**
+ * Mapping between language codes and their corresponding language information.
+ */
 export const LANGUAGE_BY_CODE = {
   [LanguageCode.EN]: Object.freeze({
     code: LanguageCode.EN,
@@ -70,7 +76,9 @@ export const LANGUAGE_BY_CODE = {
   }),
 };
 
-/** Mapping between language names and their corresponding language information. */
+/**
+ * Mapping between language names and their corresponding language information.
+ */
 export const LANGUAGE_BY_NAME = {
   [LanguageName.ENGLISH]: Object.freeze({
     code: LanguageCode.EN,

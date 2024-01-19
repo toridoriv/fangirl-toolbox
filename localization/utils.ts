@@ -5,6 +5,7 @@ import {
   toolkit,
   transliterateRussian,
 } from "@dependencies";
+
 import { LanguageCode } from "./enums.ts";
 
 const kuroshiro = new Kuroshiro();
