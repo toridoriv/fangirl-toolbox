@@ -1,6 +1,6 @@
 import "@global";
 
-import { Template, cheerioLoad } from "@dependencies";
+import { cheerioLoad, Template } from "@dependencies";
 
 import { unsafeDeepMerge } from "./utils.ts";
 
@@ -72,10 +72,10 @@ export namespace HttpClient {
       ? C
       : Config
     : T extends { defaults: infer D }
-      ? D extends Config
-        ? D
-        : Config
-      : Config;
+    ? D extends Config
+      ? D
+      : Config
+    : Config;
 
   /**
    * Type alias for an instance of the HttpClient subclass, constraining it to the generic
@@ -85,8 +85,13 @@ export namespace HttpClient {
   export type Instance<T> = T extends ClientType
     ? HttpClient<ClientType, Config>
     : T extends { prototype: infer P }
-      ? P
-      : HttpClient<ClientType, Config>;
+    ? P
+    : HttpClient<ClientType, Config>;
+
+  export interface Response<T> extends globalThis.Response {
+    data: T;
+    request: Request;
+  }
 
   // #region PRIVATE
   type RequiredProperties = "config" | "create" | "post" | "defaults" | "get" | "request";
@@ -123,12 +128,13 @@ export class HttpClient<
    * @returns The response body, parsed as JSON if the response headers indicate JSON,
    *          otherwise as text.
    */
-  public static async request<Response = SafeAny, T = SafeAny>(
+  public static async request<Data = SafeAny, T = SafeAny>(
     this: T,
     config: HttpClient.GetConfig<T>,
   ) {
     const self = HttpClient.getSelf(this);
-    const response = await fetch(...self.getFetchArgs(config));
+    const request = self.getRequest(config);
+    const response = await fetch(request);
     const body = self.isJsonContentType(response.headers)
       ? await response.json()
       : await response.text();
@@ -137,7 +143,15 @@ export class HttpClient<
       throw new HttpError(response, body);
     }
 
-    return body as Response;
+    Object.defineProperty(response, "data", {
+      value: body,
+    });
+
+    Object.defineProperty(response, "request", {
+      value: request,
+    });
+
+    return response as HttpClient.Response<Data>;
   }
 
   /**
@@ -147,12 +161,12 @@ export class HttpClient<
    * @returns The response body, parsed as JSON if the response headers indicate JSON,
    *          otherwise as text.
    */
-  public static get<Response = SafeAny, T = SafeAny>(
+  public static get<Data = SafeAny, T = SafeAny>(
     this: T,
     config: Omit<HttpClient.GetConfig<T>, "method" | "body">,
   ) {
     const self = HttpClient.getSelf(this);
-    return self.request<Response>({ ...config, method: "GET" });
+    return self.request<Data>({ ...config, method: "GET" });
   }
 
   /**
@@ -163,12 +177,12 @@ export class HttpClient<
    * @returns The response body, parsed as JSON if the response headers indicate JSON,
    *          otherwise as text.
    */
-  public static post<Response = SafeAny, T = SafeAny>(
+  public static post<Data = SafeAny, T = SafeAny>(
     this: T,
     config: Omit<HttpClient.GetConfig<T>, "method">,
   ) {
     const self = HttpClient.getSelf(this);
-    return self.request<Response>({ ...config, method: "POST" });
+    return self.request<Data>({ ...config, method: "POST" });
   }
 
   /**
@@ -192,10 +206,7 @@ export class HttpClient<
    * @returns A tuple with the request URL as the first element and the RequestInit
    *          options as the second element.
    */
-  protected static getFetchArgs<T>(
-    this: T,
-    config: HttpClient.GetConfig<T>,
-  ): [URL, RequestInit] {
+  protected static getRequest<T>(this: T, config: HttpClient.GetConfig<T>): Request {
     const self = HttpClient.getSelf(this);
     let { url, endpoint, body, ...rest } = config;
 
@@ -218,7 +229,7 @@ export class HttpClient<
       init.body = body;
     }
 
-    return [new URL(url + endpoint), init];
+    return new Request(new URL(url + endpoint), init);
   }
 
   private static getSelf<T>(value: T) {
@@ -272,8 +283,8 @@ export class HttpClient<
    * @param config - The configuration options for the request.
    * @returns A promise resolving to the response body.
    */
-  public get<ResBody>(config: Omit<Config, "body" | "method">) {
-    return this.constructor.get<ResBody>(this.getMergedConfig(config as Config));
+  public get<Data>(config: Omit<Config, "body" | "method">) {
+    return this.constructor.get<Data>(this.getMergedConfig(config as Config));
   }
 
   /**
@@ -282,8 +293,8 @@ export class HttpClient<
    * @param config - The configuration options for the request.
    * @returns A promise resolving to the response body.
    */
-  public post<ResBody>(config: Omit<Config, "method">) {
-    return this.constructor.post<ResBody>(this.getMergedConfig(config as Config));
+  public post<Data>(config: Omit<Config, "method">) {
+    return this.constructor.post<Data>(this.getMergedConfig(config as Config));
   }
 
   /**
@@ -293,8 +304,8 @@ export class HttpClient<
    *               details.
    * @returns A promise that resolves with the response body.
    */
-  public request<ResBody>(config: Config) {
-    return this.constructor.request<ResBody>(this.getMergedConfig(config as Config));
+  public request<Data>(config: Config) {
+    return this.constructor.request<Data>(this.getMergedConfig(config as Config));
   }
 }
 
@@ -548,7 +559,8 @@ export class WebScraper extends HttpClient<typeof WebScraper> {
    * @returns A Cheerio instance containing the loaded HTML.
    */
   public async scrape(config: HttpClient.Config) {
-    const html = await this.request<string>(config);
+    const response = await this.request<string>(config);
+    const html = response.data;
 
     return cheerioLoad(html);
   }

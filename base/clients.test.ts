@@ -40,7 +40,7 @@ Deno.test("HttpClient.request retrieves the body based on the response headers",
   const mockedTextResponse: [BodyInit, ResponseInit] = [JSON.stringify(mockedResponseBody), { status: 200 }];
   mockFetch.intercept(config.url, { ...config }).response(...mockedTextResponse);
   const textResponse = await HttpClient.request(config);
-  expect(textResponse).to.be.equal(mockedTextResponse[0]);
+  expect(textResponse.data).to.be.equal(mockedTextResponse[0]);
 
   const mockedJsonResponse: [BodyInit, ResponseInit] = [
     JSON.stringify(mockedResponseBody),
@@ -48,7 +48,7 @@ Deno.test("HttpClient.request retrieves the body based on the response headers",
   ];
   mockFetch.intercept(config.url, { ...config }).response(...mockedJsonResponse);
   const jsonResponse = await HttpClient.request(config);
-  expect(jsonResponse).to.deep.equal(mockedResponseBody);
+  expect(jsonResponse.data).to.deep.equal(mockedResponseBody);
 });
 
 Deno.test("HttpClient.request throws an error when a request fails", async () => {
@@ -89,7 +89,7 @@ Deno.test("HttpClient.get sends a GET HTTP request", async () => {
   const response = await HttpClient.get({ url });
 
   expect(scope.metadata.calls).to.equal(1);
-  expect(response).to.equal(mockedResponse);
+  expect(response.data).to.equal(mockedResponse);
 });
 
 Deno.test("HttpClient.get sends a POST HTTP request", async () => {
@@ -107,5 +107,5 @@ Deno.test("HttpClient.get sends a POST HTTP request", async () => {
   const response = await HttpClient.post({ url, body: payload });
 
   expect(scope.metadata.calls).to.equal(1);
-  expect(response).to.equal(mockedResponse);
+  expect(response.data).to.equal(mockedResponse);
 });
