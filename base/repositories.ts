@@ -48,15 +48,9 @@ export abstract class Repository<T> {
  */
 export abstract class LocalRepository<T> extends Repository<T> {
   /**
-   * Initializes a new instance of the `LocalRepository` with a path template.
-   * The path template is used to determine the file location for each entity based on its
-   * ID.
-   *
-   * @param pathTemplate - A template literal type that includes an ID placeholder.
+   * A template that renders into a path.
    */
-  constructor(readonly pathTemplate: Template<`${string}{id}`>) {
-    super();
-  }
+  declare abstract readonly pathTemplate: Template<`${string}{id}${string}`>;
 
   /**
    * Checks if an entity with the given ID exists by checking if a file exists at the
