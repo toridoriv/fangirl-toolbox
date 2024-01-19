@@ -21,6 +21,7 @@
     "@dependencies": "./dependencies.ts",
     "@dev-dependencies": "./dev-dependencies.ts",
     "@base": "./base/mod.ts",
+    "@global": "./base/global.ts",
     "@localization": "./localization/mod.ts",
     "@package": "./package.json",
     "kuroshiro": "npm:@sglkc/kuroshiro@1.0.1",

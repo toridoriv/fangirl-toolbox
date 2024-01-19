@@ -14,7 +14,7 @@ declare global {
   /**
    * Recursively expands the properties of a type T if T is an object type.
    */
-  export type ExpandRecursively<T, Unless = never> = T extends Unless
+  export type ExpandRecursively<T, Unless = Native> = T extends Unless
     ? T
     : {
         [K in keyof T]: ExpandRecursively<T[K], Unless>;
@@ -69,9 +69,11 @@ declare global {
    */
   export type IsObject<T> = T extends AnyArray
     ? false
-    : T extends Record<PropertyKey, SafeAny>
-      ? true
-      : false;
+    : T extends Native
+      ? false
+      : T extends Record<PropertyKey, SafeAny>
+        ? true
+        : false;
 
   /**
    * Type alias for native browser types and objects.
@@ -79,15 +81,13 @@ declare global {
   export type Native =
     | toolkit.Primitive
     | URL
-    | Map<SafeAny, SafeAny>
-    | Set<SafeAny>
-    | AnyArray
     // deno-lint-ignore ban-types
     | Function
     | Headers
     | Iterable<SafeAny>
     | BodyInit
-    | AbortSignal;
+    | AbortSignal
+    | Date;
 
   /**
    * Merge properties from two object types T and U into a new object type.
