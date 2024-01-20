@@ -51,7 +51,8 @@
   "devDependencies": {
     "@homer0/prettier-plugin-jsdoc": "^8.0.0",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "prettier": "^3.2.4"
+    "@types/prettier": "^2.7.3",
+    "prettier": "3.0.3"
   },
   "scripts": {
     "pretest:coverage": "rm -rf coverage",

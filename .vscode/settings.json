@@ -15,7 +15,7 @@
   "deno.config": "./deno.json",
   "deno.disablePaths": [
     "./var/",
-    "./prettier.config.js",
+    "./.prettierrc.cjs",
     "./plugins/prettier/",
     "./node_modules/"
   ],
@@ -26,12 +26,11 @@
   "javascript.preferences.quoteStyle": "double",
   "javascript.suggest.completeJSDocs": true,
   "javascript.suggest.jsdoc.generateReturns": true,
+  "prettier.configPath": "./.prettierrc.cjs",
+  "prettier.enable": true,
+  "prettier.prettierPath": "./node_modules/prettier/index.cjs",
   "typescript.inlayHints.parameterNames.enabled": "all",
   "typescript.preferences.quoteStyle": "double",
   "typescript.suggest.completeJSDocs": true,
-  "typescript.suggest.jsdoc.generateReturns": true,
-  "prettier.enable": true,
-  "deno.documentPreloadLimit": 8000,
-  "prettier.prettierPath": "./node_modules/prettier/index.cjs",
-  "prettier.configPath": "./prettier.config.js"
+  "typescript.suggest.jsdoc.generateReturns": true
 }

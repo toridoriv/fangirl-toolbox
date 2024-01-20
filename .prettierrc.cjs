@@ -3,7 +3,7 @@
 /**
  * @type {PrettierConfig & Partial<PJPOptions> & SortImportsConfig}
  */
-export default {
+module.exports = {
   trailingComma: "all",
   tabWidth: 2,
   semi: true,
@@ -44,7 +44,7 @@ export default {
 };
 
 /**
- * @typedef {import("prettier").Config} PrettierConfig
+ * @typedef {import("prettier").Options} PrettierConfig
  */
 
 /**
