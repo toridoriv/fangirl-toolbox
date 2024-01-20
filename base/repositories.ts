@@ -1,9 +1,13 @@
 import { existsSync, Template } from "@dependencies";
 
+export namespace Repository {
+  export type Entity = { id: string };
+}
+
 /**
  * Abstract base repository class with CRUD methods for entities of type `T`.
  */
-export abstract class Repository<T> {
+export abstract class Repository<T extends Repository.Entity> {
   /**
    * Gets the number of entities.
    *
@@ -46,11 +50,25 @@ export abstract class Repository<T> {
  * in a local storage context, with the assumption that each entity is associated with a
  * unique ID.
  */
-export abstract class LocalRepository<T> extends Repository<T> {
+export abstract class LocalRepository<T extends Repository.Entity> extends Repository<T> {
+  declare abstract readonly directory: string;
+
   /**
    * A template that renders into a path.
    */
   declare abstract readonly pathTemplate: Template<`${string}{id}${string}`>;
+
+  public count(): Promise<number> {
+    throw new Error("Not implemented");
+  }
+
+  public async delete(id: string): Promise<void> {
+    if (this.exists(id)) {
+      const path = this.pathTemplate.render({ id });
+
+      await Deno.remove(path);
+    }
+  }
 
   /**
    * Checks if an entity with the given ID exists by checking if a file exists at the
