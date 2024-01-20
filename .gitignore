@@ -3,5 +3,6 @@ deno.lock
 package-lock.json
 
 # 💬 Automatically generated data.
-var/data/**/*.json
+var/cache/**/*.json
+var/cache/**/*.html
 coverage
