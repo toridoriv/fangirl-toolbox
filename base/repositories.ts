@@ -1,7 +1,28 @@
 import { existsSync, Template } from "@dependencies";
 
 export namespace Repository {
+  /**
+   * Represents a generic entity with a unique identifier.
+   * This type can be used as a base for more specific entities in the application,
+   * where each entity requires a unique 'id' property of type string.
+   */
   export type Entity = { id: string };
+
+  /**
+   * Type alias for the constructor of Repository subclasses.
+   */
+  export type Constructor<T> = T extends new (...args: AnyArray) => SafeAny ? T : never;
+
+  /**
+   * Represents an instance type derived from a class or a default repository type.
+   *
+   * This utility type is used to extract the instance type of a class (i.e., the type of
+   * the prototype property of the class). If the generic type `T` does not have a
+   * prototype property, it defaults to the `Repository<Entity>` type.
+   *
+   * @template T - The type to evaluate, typically a class.
+   */
+  export type Instance<T> = T extends { prototype: infer P } ? P : Repository<Entity>;
 }
 
 /**
@@ -77,6 +98,11 @@ export abstract class Repository<T extends Repository.Entity> {
  * unique ID.
  */
 export abstract class LocalRepository<T extends Repository.Entity> extends Repository<T> {
+  /**
+   * Represents the base structure for a repository.
+   * This abstract property should be implemented to specify the directory path where the
+   * repository data is stored or managed.
+   */
   declare abstract readonly directory: string;
 
   /**
