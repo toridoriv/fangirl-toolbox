@@ -55,5 +55,12 @@ export abstract class Service<T extends Repository.Entity> {
 
   public constructor(readonly repository: Repository<T>) {}
 
+  /**
+   * Executes the service with the given arguments.
+   *
+   * @param args - The arguments to pass to the execution.
+   * @returns A promise that resolves when the execution is complete, or void if
+   *          synchronous.
+   */
   public abstract execute(...args: AnyArray): void | Promise<void>;
 }
