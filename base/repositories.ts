@@ -9,6 +9,32 @@ export namespace Repository {
  */
 export abstract class Repository<T extends Repository.Entity> {
   /**
+   * Creates an instance of the repository.
+   * This static method is intended to be called on a class that extends `Repository`.
+   * It utilizes a generic type `T` to ensure that the type of `this` within the method
+   * refers to the type of the subclass on which `create` is called.
+   *
+   * @returns An instance of the subclass that extends `Repository`.
+   */
+  public static create<T>(this: T) {
+    const self = Repository.getSelf(this);
+
+    return new self() as Repository.Instance<T>;
+  }
+
+  private static getSelf<T>(value: T) {
+    if ((value as SafeAny).name === LocalRepository.name) {
+      return value as Repository.Constructor<T>;
+    }
+
+    if ((value as SafeAny).prototype instanceof Repository) {
+      return value as Repository.Constructor<T>;
+    }
+
+    throw new TypeError("Something wrong happened and the context of `this` was lost.");
+  }
+
+  /**
    * Gets the number of entities.
    *
    * @returns A promise that resolves to the number of entities.
