@@ -40,6 +40,13 @@ module.exports = {
         printWidth: 120,
       },
     },
+    {
+      files: "*.json",
+      options: {
+        parser: "json",
+        plugins: [],
+      },
+    },
   ],
 };
 

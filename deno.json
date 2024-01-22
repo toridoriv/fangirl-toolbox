@@ -3,9 +3,7 @@
     "checkJs": true,
     "noErrorTruncation": true,
     "strictFunctionTypes": true,
-    "lib": [
-      "deno.window"
-    ],
+    "lib": ["deno.window"],
     "exactOptionalPropertyTypes": false,
     "strictPropertyInitialization": false
   },
@@ -15,7 +13,8 @@
     "singleQuote": false,
     "semiColons": true,
     "useTabs": false,
-    "proseWrap": "always"
+    "proseWrap": "always",
+    "include": []
   },
   "imports": {
     "@dependencies": "./dependencies.ts",
@@ -23,6 +22,7 @@
     "@base": "./base/mod.ts",
     "@global": "./base/global.ts",
     "@localization": "./localization/mod.ts",
+    "@fanfictions": "./fanfictions/mod.ts",
     "@package": "./package.json",
     "kuroshiro": "npm:@sglkc/kuroshiro@1.0.1",
     "eld": "https://esm.sh/eld@1.0.0?bundle-deps&target=deno&keep-names&deno-std=0.212.0",
@@ -36,20 +36,15 @@
   },
   "lint": {
     "rules": {
-      "tags": [
-        "recommended"
-      ],
-      "exclude": [
-        "no-namespace",
-        "no-empty-interface"
-      ]
+      "tags": ["recommended"],
+      "exclude": ["no-namespace", "no-empty-interface"]
     }
   },
   "lock": "deno.lock",
   "scopes": {
     "./bin/": {
-      "@lib/": "./lib/",
-      "@utils/": "./bin/utils/",
+      "@dependencies": "./bin/dependencies.ts",
+      "@helpers": "./bin/helpers.ts",
       "cliffy/": "https://deno.land/x/cliffy@v1.0.0-rc.3/"
     }
   },

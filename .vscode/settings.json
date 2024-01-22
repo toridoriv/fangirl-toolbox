@@ -3,10 +3,10 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[json]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -30,7 +30,7 @@
   "prettier.enable": true,
   "prettier.prettierPath": "./node_modules/prettier/index.cjs",
   "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.preferGoToSourceDefinition": true,
   "typescript.preferences.quoteStyle": "double",
-  "typescript.suggest.completeJSDocs": true,
-  "typescript.suggest.jsdoc.generateReturns": true
+  "typescript.suggest.completeJSDocs": true
 }
