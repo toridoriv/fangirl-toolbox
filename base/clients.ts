@@ -24,6 +24,11 @@ export class HttpError extends Error {
 }
 
 export namespace HttpClient {
+  /**
+   * Reusable response type with flexible data typing for the parsed body data.
+   */
+  export type AnyResponse = Response<SafeAny>;
+
   export interface Config extends RequestInit {
     /**
      * The body to send with the HTTP request. Can be a `BodyInit` value that will be
@@ -39,6 +44,19 @@ export namespace HttpClient {
      * Request headers.
      */
     headers?: HeadersInit | Headers;
+    /**
+     * Optional interceptors for the HTTP client.
+     */
+    interceptors?: {
+      /**
+       * Interceptors to process requests before sending.
+       */
+      request?: RequestInterceptor[];
+      /**
+       * Interceptors to process responses after receiving.
+       */
+      response?: ResponseInterceptor[];
+    };
     /**
      * Base URL for requests.
      */
@@ -88,6 +106,26 @@ export namespace HttpClient {
     ? P
     : HttpClient<ClientType, Config>;
 
+  /**
+   * Type alias for a request interceptor function.
+   *
+   * @param request - The request object to intercept.
+   * @returns The intercepted request object.
+   */
+  export type RequestInterceptor = (request: Request) => Promise<Request>;
+
+  /**
+   * Type alias for a response interceptor function.
+   *
+   * @param response - The response object to intercept.
+   * @returns The intercepted response object.
+   */
+  export type ResponseInterceptor = (response: AnyResponse) => Promise<AnyResponse>;
+
+  /**
+   * Interface extending the native Response interface.
+   * Adds the parsed response data and original request object.
+   */
   export interface Response<T> extends globalThis.Response {
     data: T;
     request: Request;
@@ -134,7 +172,10 @@ export class HttpClient<
   ) {
     const self = HttpClient.getSelf(this);
     const request = self.getRequest(config);
-    const response = await fetch(request);
+
+    await HttpClient.runRequestInterceptors(request, config);
+
+    const response = (await fetch(request)) as HttpClient.Response<Data>;
     const body = self.isJsonContentType(response.headers)
       ? await response.json()
       : await response.text();
@@ -143,15 +184,12 @@ export class HttpClient<
       throw new HttpError(response, body);
     }
 
-    Object.defineProperty(response, "data", {
-      value: body,
-    });
+    response.data = body;
+    response.request = request;
 
-    Object.defineProperty(response, "request", {
-      value: request,
-    });
+    await HttpClient.runResponseInterceptors(response, config);
 
-    return response as HttpClient.Response<Data>;
+    return response;
   }
 
   /**
@@ -208,7 +246,7 @@ export class HttpClient<
    */
   protected static getRequest<T>(this: T, config: HttpClient.GetConfig<T>): Request {
     const self = HttpClient.getSelf(this);
-    let { url, endpoint, body, ...rest } = config;
+    let { url, endpoint, body, interceptors: _interceptors, ...rest } = config;
 
     if (!url) {
       throw new TypeError("The url in RequestConfig is required.");
@@ -242,6 +280,34 @@ export class HttpClient<
     }
 
     throw new TypeError("Something wrong happened and the context of `this` was lost.");
+  }
+
+  private static async runRequestInterceptors<T>(
+    this: T,
+    request: Request,
+    config: HttpClient.GetConfig<T>,
+  ) {
+    if (!config?.interceptors?.request) {
+      return;
+    }
+
+    for (const interceptor of config.interceptors.request) {
+      await interceptor(request);
+    }
+  }
+
+  private static async runResponseInterceptors<T>(
+    this: T,
+    response: HttpClient.AnyResponse,
+    config: HttpClient.GetConfig<T>,
+  ) {
+    if (!config?.interceptors?.response) {
+      return;
+    }
+
+    for (const interceptor of config.interceptors.response) {
+      await interceptor(response);
+    }
   }
 
   /**
