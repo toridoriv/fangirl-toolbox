@@ -70,10 +70,10 @@ declare global {
   export type IsObject<T> = T extends AnyArray
     ? false
     : T extends Native
-      ? false
-      : T extends Record<PropertyKey, SafeAny>
-        ? true
-        : false;
+    ? false
+    : T extends Record<PropertyKey, SafeAny>
+    ? true
+    : false;
 
   /**
    * Type alias for native browser types and objects.
