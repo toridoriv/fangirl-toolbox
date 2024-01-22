@@ -105,8 +105,8 @@ declare global {
           : U[K]
         : U[K]
       : K extends keyof T
-        ? T[K]
-        : never;
+      ? T[K]
+      : never;
   }>;
 
   /**
