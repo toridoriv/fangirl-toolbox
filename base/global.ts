@@ -130,27 +130,9 @@ declare global {
   export type SetPartial<T, K extends keyof T> = Expand<Partial<Pick<T, K>> & Omit<T, K>>;
 
   /**
-   * Gets the common keys between two types T and U.
+   * Defines a generic type for class constructors.
+   *
+   * @template T - The class type.
    */
-  export type GetCommonKeys<
-    T,
-    U,
-    KeysOfU = toolkit.UnionToTuple<keyof U>,
-    Cache extends AnyArray = [],
-  > = KeysOfU extends []
-    ? Cache
-    : KeysOfU extends [infer F, ...infer R]
-      ? F extends keyof T
-        ? GetCommonKeys<T, U, R, [...Cache, F]>
-        : GetCommonKeys<T, U, R, Cache>
-      : never;
-
-  /**
-   * Constructs a new type with the properties in C set to optional.
-   * All other properties remain unchanged.
-   */
-  export type PartialDiff<T, U, C extends (keyof T)[] = GetCommonKeys<T, U>> = SetPartial<
-    T,
-    C[number]
-  >;
+  export type Constructor<T> = T extends new (...args: AnyArray) => SafeAny ? T : never;
 }
