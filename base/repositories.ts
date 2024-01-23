@@ -98,7 +98,7 @@ export abstract class Repository<T extends Repository.Entity> {
    * @param value - The partial entity containing the updated values.
    * @returns A promise that resolves when the entity has been updated.
    */
-  public abstract update(value: DeepPartial<T>): Promise<void>;
+  public abstract update(value: Repository.Entity & DeepPartial<T>): Promise<void>;
 }
 
 /**
