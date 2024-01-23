@@ -144,6 +144,20 @@ export class TranslatableText extends Model<typeof TranslatableText> {
   }
 
   /**
+   * Gets all translations with the given language code.
+   *
+   * @param code - The language code to filter by.
+   * @returns An array of translations with the matching language code.
+   */
+  public getTranslationsByCode(code: LanguageCode) {
+    const result = this.translations.filter(
+      (translation) => translation.language.code === code,
+    );
+
+    return result;
+  }
+
+  /**
    * Gets a translation by language name.
    *
    * @param name - The language name to look for.
@@ -155,5 +169,19 @@ export class TranslatableText extends Model<typeof TranslatableText> {
     );
 
     return result || null;
+  }
+
+  /**
+   * Gets all translations with the given language name.
+   *
+   * @param name - The language name to filter by.
+   * @returns An array of translations with the matching language name.
+   */
+  public getTranslationsByName(name: LanguageName) {
+    const result = this.translations.filter(
+      (translation) => translation.language.name === name,
+    );
+
+    return result;
   }
 }
