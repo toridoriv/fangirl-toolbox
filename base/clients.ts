@@ -629,6 +629,18 @@ export class OpenAiClient extends HttpClient<typeof OpenAiClient> {
   }
 }
 
+export namespace WebScraper {
+  /**
+   * Configuration object of WebScraper clients.
+   */
+  export type Config = HttpClient.Config;
+
+  /**
+   * Response from WebScraper clients.
+   */
+  export type Response = HttpClient.Response<string>;
+}
+
 /**
  * Web scraper HTTP client.
  */
@@ -654,7 +666,7 @@ export class WebScraper extends HttpClient<typeof WebScraper> {
   /**
    * Default configuration for web scraping requests.
    */
-  static defaults: HttpClient.Config = {
+  static defaults: WebScraper.Config = {
     headers: {
       "content-type": "text/html; charset=utf-8",
     },
@@ -673,7 +685,7 @@ export class WebScraper extends HttpClient<typeof WebScraper> {
    * @returns An object with a Cheerio wrapper and the raw HTML source of the scraped
    *          page.
    */
-  public async scrape(config: HttpClient.Config) {
+  public async scrape(config: WebScraper.Config) {
     const response = await this.request<string>(config);
     const source = response.data;
 
