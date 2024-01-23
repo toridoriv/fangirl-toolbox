@@ -61,7 +61,12 @@ export class LocalizedText extends Model<typeof LocalizedText> {
    * @returns The modified LocalizedText object.
    */
   public async setRichText() {
-    this.rich = await RichTextByLanguageCode[this.language.code](this.raw);
+    if (!this.rich) {
+      this.rich = await RichTextByLanguageCode[this.language.code](this.raw);
+    }
+
+    return this;
+  }
 
     return this;
   }
