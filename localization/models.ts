@@ -68,6 +68,15 @@ export class LocalizedText extends Model<typeof LocalizedText> {
     return this;
   }
 
+  /**
+   * Updates the language code for this localized text.
+   *
+   * @param code - The new language code.
+   * @returns This LocalizedText instance.
+   */
+  public updateLanguage(language: LanguageCode | LanguageName) {
+    this.language = LanguageSchema.parse(language);
+
     return this;
   }
 }
