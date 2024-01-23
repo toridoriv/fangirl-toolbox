@@ -112,16 +112,21 @@ export class TranslatableText extends Model<typeof TranslatableText> {
     });
   }
 
-  async setEnglishTranslation(translator: {
-    translate: (value: string) => Promise<string>;
-  }) {
-    let en = this.getTranslationByCode(LanguageCode.EN);
+  /**
+   * Adds a translation to the translations array.
+   *
+   * @param translation - The translation to add, either as a LocalizedTextInput or a
+   *                    LocalizedText instance.
+   * @returns This `TranslatableText` instance for method chaining.
+   */
+  public addTranslation(translation: LocalizedTextInput | LocalizedText) {
+    if (translation instanceof LocalizedText) {
+      this.translations.push(translation);
+    } else {
+      this.translations.push(new LocalizedText(translation));
+    }
 
-    if (en) return this;
-
-    en = LocalizedText.fromString(await translator.translate(this.original.raw));
-
-    this.translations.push(en);
+    return this;
   }
 
   /**
