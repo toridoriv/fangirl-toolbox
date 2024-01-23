@@ -389,7 +389,7 @@ export namespace OpenAiClient {
     model: Model;
   }
 
-  export interface AnyResponse {
+  export interface AnyData {
     /**
      * The model used for the chat completion.
      */
@@ -411,7 +411,10 @@ export namespace OpenAiClient {
     | "gpt-3.5-turbo";
 
   export namespace ChatCompletion {
-    export type Options = Pick<Payload, "n" | "temperature">;
+    /**
+     * Response from ChatCompletion.
+     */
+    export type Response = HttpClient.Response<Data>;
 
     export interface Payload {
       /**
@@ -454,7 +457,7 @@ export namespace OpenAiClient {
       presence_penalty?: number;
     }
 
-    export interface Response extends AnyResponse {
+    export interface Data extends AnyData {
       /**
        * A unique identifier for the chat completion.
        */
@@ -591,16 +594,37 @@ export class OpenAiClient extends HttpClient<typeof OpenAiClient> {
   };
 
   /**
+   * Builds a chat completion message object.
+   *
+   * @param content - The message content.
+   * @param role    - The role of the message author.
+   * @returns The constructed message object.
+   */
+  public static buildMessage(
+    content: string,
+    role: OpenAiClient.ChatCompletion.Message["role"],
+  ) {
+    return {
+      role,
+      content,
+    };
+  }
+
+  protected getMergedConfig<C extends OpenAiClient.Config>(config: C) {
+    return unsafeDeepMerge<C>(this.defaults, config, { arrays: "merge" });
+  }
+
+  /**
    * Sends a POST request to the OpenAI `/v1/chat/completions` endpoint to get a chat
    * completion from the specified payload.
    *
    * @param payload - The request payload containing the chat completion parameters.
    * @returns A promise resolving to the API response containing the chat completion.
    */
-  public createChatCompletion(payload: OpenAiClient.ChatCompletion.Payload) {
-    return this.post<OpenAiClient.ChatCompletion.Response>({
-      body: payload,
+  public createChatCompletion(config: Omit<OpenAiClient.Config, "endpoint">) {
+    return this.post<OpenAiClient.ChatCompletion.Data>({
       endpoint: "/v1/chat/completions",
+      ...config,
     });
   }
 }
