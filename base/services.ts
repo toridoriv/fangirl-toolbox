@@ -1,13 +1,8 @@
+import "@global";
+
 import type { Repository } from "./repositories.ts";
 
 export namespace Service {
-  /**
-   * Defines a generic type for class constructors.
-   *
-   * @template T - The class type.
-   */
-  export type Constructor<T> = T extends new (...args: AnyArray) => SafeAny ? T : never;
-
   /**
    * Defines the instance type for a service.
    *
@@ -43,24 +38,20 @@ export abstract class Service<T extends Repository.Entity> {
 
   private static getSelf<T>(value: T) {
     if ((value as SafeAny).name === Service.name) {
-      return value as Service.Constructor<T>;
+      return value as Constructor<T>;
     }
 
     if ((value as SafeAny).prototype instanceof Service) {
-      return value as Service.Constructor<T>;
+      return value as Constructor<T>;
     }
 
     throw new TypeError("Something wrong happened and the context of `this` was lost.");
   }
 
-  public constructor(readonly repository: Repository<T>) {}
-
   /**
-   * Executes the service with the given arguments.
+   * Constructor for the Service class.
    *
-   * @param args - The arguments to pass to the execution.
-   * @returns A promise that resolves when the execution is complete, or void if
-   *          synchronous.
+   * @param {Repository<T>} repository - The repository this service will use.
    */
-  public abstract execute(...args: AnyArray): void | Promise<void>;
+  public constructor(readonly repository: Repository<T>) {}
 }
