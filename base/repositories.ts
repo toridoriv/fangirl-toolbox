@@ -68,6 +68,16 @@ export abstract class Repository<T extends Repository.Entity> {
    * @returns A promise that resolves when the entity has been deleted.
    */
   public abstract delete(id: string): Promise<void>;
+
+  /**
+   * Checks if an entity with the given ID exists.
+   *
+   * @param id - The ID of the entity to check for.
+   * @returns A boolean indicating if the entity exists, or a promise that resolves to
+   *          a boolean.
+   */
+  public abstract exists(id: string): boolean | Promise<boolean>;
+
   /**
    * Gets an entity by ID.
    *
