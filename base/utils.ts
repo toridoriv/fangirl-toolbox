@@ -1,4 +1,4 @@
-import { DeepMergeOptions, deepMerge } from "@dependencies";
+import { DeepMergeOptions, deepMerge, z } from "@dependencies";
 
 /**
  * Picks a specific property from an object and returns its value.
@@ -55,4 +55,23 @@ export function unsafeDeepMerge<T>(
   options?: DeepMergeOptions,
 ) {
   return deepMerge(record, other, options) as unknown as T;
+}
+
+/**
+ * Gets the Zod schema shape for the given schema, if available.
+ *
+ * @param schema - The Zod schema to get the shape for.
+ * @returns The schema's shape if it is a `z.ZodObject` or `z.ZodEffects`
+ *          instance, otherwise `null`.
+ */
+export function getZodSchemaShape(schema: z.ZodTypeAny): z.ZodRawShape | null {
+  if (schema instanceof z.ZodObject) {
+    return schema.shape;
+  }
+
+  if (schema instanceof z.ZodEffects) {
+    return getZodSchemaShape(schema._def.schema);
+  }
+
+  return null;
 }

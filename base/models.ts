@@ -1,4 +1,6 @@
-import type { z } from "@dependencies";
+import { z } from "@dependencies";
+
+import { getZodSchemaShape } from "../fanfictions/utils.ts";
 
 /**
  * Represents the constructor of a base model.
@@ -80,6 +82,31 @@ export abstract class Model<C extends ModelCtor> {
     this.constructor.schema.parse(this);
 
     return this;
+  }
+
+  /**
+   * Sets a property on the model instance to the provided value if it passes schema
+   * validation.
+   *
+   * @param key   - The property key to set.
+   * @param value - The value to set.
+   * @returns The model instance after attempting to set and validate the property.
+   */
+  public setProperty<K extends keyof typeof this>(
+    key: K,
+    value: GetModelProperties<(typeof this)["constructor"]>[K],
+  ) {
+    const shape = getZodSchemaShape(this.constructor.schema);
+
+    if (shape) {
+      const validation = shape[key as string].safeParse(value);
+
+      if (validation.success) {
+        this[key] = validation.data;
+      }
+    }
+
+    return this.validate();
   }
 }
 
