@@ -30,7 +30,7 @@ export namespace Model {
 
   type ModelType = typeof Model;
 
-  type RequiredProperties = "schema" | "parse";
+  type RequiredProperties = "schema" | "parse" | "toSeal";
 }
 
 /**
@@ -41,6 +41,11 @@ export abstract class Model<C extends Model.Generic> {
    * The Zod schema used to validate the model.
    */
   declare static schema: z.ZodTypeAny;
+
+  /**
+   * An array that stores keys to be sealed after construction.
+   */
+  static toSeal: SafeAny[] = [];
 
   /**
    * Parses model properties and returns a new instance of the model.
@@ -89,6 +94,27 @@ export abstract class Model<C extends Model.Generic> {
    */
   constructor(properties: Model.Input<C>) {
     Object.assign(this, this.constructor.schema.parse(properties));
+    this.seal();
+  }
+
+  /**
+   * Seals the specified properties of the model instance to make them read-only.
+   */
+  protected seal() {
+    const toSeal = this.constructor.toSeal;
+
+    for (let i = 0; i < toSeal.length; i++) {
+      if (Object.hasOwn(this, toSeal[i])) {
+        Object.defineProperty(this, toSeal[i], {
+          // @ts-ignore: ¯\_(ツ)_/¯
+          value: this[toSeal[i]],
+          enumerable: true,
+          writable: false,
+        });
+      }
+    }
+
+    return this;
   }
 
   /**
@@ -113,6 +139,15 @@ export abstract class Model<C extends Model.Generic> {
   }
 
   /**
+   * Triggers an update event for the model instance.
+   *
+   * @returns The model instance.
+   */
+  public triggerUpdate() {
+    return this;
+  }
+
+  /**
    * Sets a property on the model instance to the provided value if it passes schema
    * validation.
    *
@@ -121,6 +156,10 @@ export abstract class Model<C extends Model.Generic> {
    * @returns The model instance after attempting to set and validate the property.
    */
   public setProperty<K extends keyof Model.Input<C>>(key: K, value: Model.Input<C>[K]) {
+    if (this.constructor.toSeal.includes(key)) {
+      return this;
+    }
+
     const shape = getZodSchemaShape(this.constructor.schema);
 
     if (shape) {
@@ -134,6 +173,8 @@ export abstract class Model<C extends Model.Generic> {
       }
     }
 
-    return this.validate();
+    this.triggerUpdate();
+
+    return this;
   }
 }
