@@ -9,12 +9,12 @@ import { RichTextByLanguageCode } from "./utils.ts";
 /**
  * Type definition for the properties of a LocalizedText object.
  */
-export type LocalizedTextProperties = z.output<typeof LocalizedText.schema>;
+export type LocalizedTextProperties = Model.Output<typeof LocalizedText>;
 
 /**
  * Type definition for the input properties when creating a LocalizedText object.
  */
-export type LocalizedTextInput = z.input<typeof LocalizedText.schema>;
+export type LocalizedTextInput = Model.Input<typeof LocalizedText>;
 
 export interface LocalizedText extends LocalizedTextProperties {}
 
@@ -75,9 +75,7 @@ export class LocalizedText extends Model<typeof LocalizedText> {
    * @returns This LocalizedText instance.
    */
   public updateLanguage(language: LanguageCode | LanguageName) {
-    this.language = LanguageSchema.parse(language);
-
-    return this;
+    return this.setProperty("language", language);
   }
 }
 
@@ -86,17 +84,17 @@ export const LocalizedTextModelSchema = z
   .min(1)
   .trim()
   .transform(LocalizedText.fromString)
-  .or(LocalizedText.schema.transform(Model.parseFromModel(LocalizedText)));
+  .or(LocalizedText.schema.transform(LocalizedText.parseFromModel(LocalizedText)));
 
 /**
  * Type definition for the properties of a TranslatedText object.
  */
-export type TranslatableTextProperties = z.output<typeof TranslatableText.schema>;
+export type TranslatableTextProperties = Model.Output<typeof TranslatableText>;
 
 /**
  * Type definition for the input properties when creating a TranslatableText object.
  */
-export type TranslatableTextInput = z.input<typeof TranslatableText.schema>;
+export type TranslatableTextInput = Model.Input<typeof TranslatableText>;
 
 export interface TranslatableText extends TranslatableTextProperties {}
 
@@ -106,9 +104,16 @@ export class TranslatableText extends Model<typeof TranslatableText> {
     translations: z.array(LocalizedTextModelSchema).default([]),
   });
 
+  /**
+   * Creates a new TranslatableText instance from a string value.
+   *
+   * @param value - The string to use for the original localized text.
+   * @returns A TranslatableText instance with the original text set from the input
+   *          string.
+   */
   static fromString(value: string) {
     return new TranslatableText({
-      original: value,
+      original: LocalizedText.fromString(value),
     });
   }
 

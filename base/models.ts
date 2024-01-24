@@ -2,28 +2,45 @@ import { z } from "@dependencies";
 
 import { getZodSchemaShape } from "../fanfictions/utils.ts";
 
-/**
- * Represents the constructor of a base model.
- */
-export interface ModelCtor {
-  new (...args: SafeAny[]): this["prototype"];
-  parse(properties: GetModelProperties<this>): this["prototype"];
+export namespace Model {
   /**
-   * The prototype of the model class.
+   * Represents the constructor of a base model.
    */
-  prototype: SafeAny;
+  export type Constructor<T> = T extends Generic
+    ? new (properties: Input<T>) => Instance<T>
+    : SafeAny;
+
   /**
-   * The Zod schema used to validate the model.
+   * Gets the properties required to construct an instance of the model `T`.
    */
-  schema: z.ZodTypeAny;
+  export type Input<T> = T extends Generic ? z.input<T["schema"]> : never;
+
+  /**
+   * Gets the output properties from validating against the model schema.
+   */
+  export type Output<T> = T extends Generic ? z.output<T["schema"]> : never;
+
+  /**
+   * Type alias for a generic Model type, which picks the minimum required properties from
+   * the abstract model class.
+   */
+  export type Generic = Pick<ModelType, RequiredProperties>;
+
+  export type Instance<T> = T extends { prototype: infer P } ? P : Model<SafeAny>;
+
+  type ModelType = typeof Model;
+
+  type RequiredProperties = "schema" | "parse";
 }
 
 /**
  * Abstract base class for models with validation via Zod schemas.
  */
-export abstract class Model<C extends ModelCtor> {
-  // deno-lint-ignore no-explicit-any
-  declare static schema: any;
+export abstract class Model<C extends Model.Generic> {
+  /**
+   * The Zod schema used to validate the model.
+   */
+  declare static schema: z.ZodTypeAny;
 
   /**
    * Parses model properties and returns a new instance of the model.
@@ -32,11 +49,10 @@ export abstract class Model<C extends ModelCtor> {
    * @param properties - The properties to parse.
    * @returns A new instance of the model with the parsed properties.
    */
-  static parse<T extends ModelCtor>(
-    this: T,
-    properties: GetModelProperties<T>,
-  ): ModelInstance<T> {
-    return new this(properties);
+  static parse<T>(this: T, properties: Model.Input<T>): Model.Instance<T> {
+    const self = Model.getSelf(this);
+
+    return new self(properties);
   }
 
   /**
@@ -46,8 +62,20 @@ export abstract class Model<C extends ModelCtor> {
    * @param model - The model constructor whose parse method to bind.
    * @returns A function that parses properties into a model instance.
    */
-  static parseFromModel<T extends ModelCtor, P>(model: T) {
-    return model.parse.bind(model) as (properties: P) => ModelInstance<T>;
+  static parseFromModel<T extends Model.Generic>(model: T) {
+    return model.parse.bind(model) as (properties: Model.Input<T>) => Model.Instance<T>;
+  }
+
+  private static getSelf<T>(value: T) {
+    if ((value as SafeAny).name === Model.name) {
+      return value as Model.Constructor<T>;
+    }
+
+    if ((value as SafeAny).prototype instanceof Model) {
+      return value as Model.Constructor<T>;
+    }
+
+    throw new TypeError("Something wrong happened and the context of `this` was lost.");
   }
 
   declare ["constructor"]: C;
@@ -59,7 +87,7 @@ export abstract class Model<C extends ModelCtor> {
    *
    * @param properties - The properties to parse and assign to the instance.
    */
-  constructor(properties: z.input<C["schema"]>) {
+  constructor(properties: Model.Input<C>) {
     Object.assign(this, this.constructor.schema.parse(properties));
   }
 
@@ -92,37 +120,20 @@ export abstract class Model<C extends ModelCtor> {
    * @param value - The value to set.
    * @returns The model instance after attempting to set and validate the property.
    */
-  public setProperty<K extends keyof typeof this>(
-    key: K,
-    value: GetModelProperties<(typeof this)["constructor"]>[K],
-  ) {
+  public setProperty<K extends keyof Model.Input<C>>(key: K, value: Model.Input<C>[K]) {
     const shape = getZodSchemaShape(this.constructor.schema);
 
     if (shape) {
       const validation = shape[key as string].safeParse(value);
 
       if (validation.success) {
-        this[key] = validation.data;
+        Object.defineProperty(this, key, {
+          value: validation.data,
+          enumerable: true,
+        });
       }
     }
 
     return this.validate();
   }
 }
-
-/**
- * Gets all non-method properties from an object type.
- */
-export type GetNonMethodProperties<T> = {
-  [K in keyof T as T[K] extends CallableFunction | ModelCtor ? never : K]: T[K];
-};
-
-/**
- * Gets the properties required to construct an instance of the model `T`.
- */
-export type GetModelProperties<T extends ModelCtor> = z.input<T["schema"]>;
-
-/**
- * Gets the prototype property of the BaseModelConstructor to be the instance type.
- */
-export type ModelInstance<T extends ModelCtor> = T["prototype"];
