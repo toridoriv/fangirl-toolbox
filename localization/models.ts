@@ -3,7 +3,7 @@ import { eld, z } from "@dependencies";
 import { Model } from "@base";
 
 import { LanguageCode, LanguageName } from "./enums.ts";
-import { LanguageSchema } from "./schemas.ts";
+import { StringOrLanguageSchema } from "./schemas.ts";
 import { RichTextByLanguageCode } from "./utils.ts";
 
 /**
@@ -39,7 +39,7 @@ export class LocalizedText extends Model<typeof LocalizedText> {
     /**
      * The language schema to validate the language field.
      */
-    language: LanguageSchema,
+    language: StringOrLanguageSchema,
   });
 
   /**

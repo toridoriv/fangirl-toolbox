@@ -31,3 +31,22 @@ export const LanguageSchema = z
   })
   .or(LanguageCodeSchema.transform(lazyPick(LANGUAGE_BY_CODE)))
   .or(LanguageNameSchema.transform(lazyPick(LANGUAGE_BY_NAME)));
+
+/**
+ * Defines a schema that can accept either a string or LanguageSchema object as input.
+ */
+export const StringOrLanguageSchema = z
+  .preprocess(preprocessStringLanguage, z.string())
+  .transform(LanguageSchema.parse)
+  .or(LanguageSchema);
+
+function preprocessStringLanguage(value: unknown) {
+  if (typeof value === "string") {
+    if (value.length === 2) {
+      return value.toLowerCase();
+    }
+
+    return value[0].toUpperCase() + value.substring(1).toLowerCase();
+  }
+  return value;
+}
