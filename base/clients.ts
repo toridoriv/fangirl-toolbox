@@ -287,12 +287,10 @@ export class HttpClient<
     request: Request,
     config: HttpClient.GetConfig<T>,
   ) {
-    if (!config?.interceptors?.request) {
-      return;
-    }
-
-    for (const interceptor of config.interceptors.request) {
-      await interceptor(request);
+    if (config?.interceptors?.request) {
+      for (const interceptor of config.interceptors.request) {
+        await interceptor(request);
+      }
     }
   }
 
@@ -301,12 +299,10 @@ export class HttpClient<
     response: HttpClient.AnyResponse,
     config: HttpClient.GetConfig<T>,
   ) {
-    if (!config?.interceptors?.response) {
-      return;
-    }
-
-    for (const interceptor of config.interceptors.response) {
-      await interceptor(response);
+    if (config?.interceptors?.response) {
+      for (const interceptor of config.interceptors.response) {
+        await interceptor(response);
+      }
     }
   }
 
