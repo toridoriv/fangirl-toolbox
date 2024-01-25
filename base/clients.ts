@@ -371,9 +371,9 @@ export class HttpClient<
   }
 }
 
-export namespace OpenAiClient {
+export namespace OpenAi {
   export interface Config extends HttpClient.Config {
-    body?: AnyPayload | ChatCompletion.Payload;
+    body?: AnyPayload | Chat.Payload;
   }
 
   export interface AnyPayload {
@@ -406,11 +406,16 @@ export namespace OpenAiClient {
     | "gpt-3.5-turbo-16k"
     | "gpt-3.5-turbo";
 
-  export namespace ChatCompletion {
+  /**
+   * Given a list of messages comprising a conversation, the model will return a response.
+   *
+   * @see {@link https://platform.openai.com/docs/api-reference/chat Api Reference: Chat}
+   */
+  export namespace Chat {
     /**
      * Response from ChatCompletion.
      */
-    export type Response = HttpClient.Response<Data>;
+    export type Response = HttpClient.Response<Completion>;
 
     export interface Payload {
       /**
@@ -453,7 +458,7 @@ export namespace OpenAiClient {
       presence_penalty?: number;
     }
 
-    export interface Data extends AnyData {
+    export interface Completion extends AnyData {
       /**
        * A unique identifier for the chat completion.
        */
@@ -571,14 +576,14 @@ export namespace OpenAiClient {
 /**
  * Client for making requests to the OpenAI API.
  */
-export class OpenAiClient extends HttpClient<typeof OpenAiClient> {
-  declare static config: OpenAiClient.Config;
+export class OpenAi extends HttpClient<typeof OpenAi> {
+  declare static config: OpenAi.Config;
 
   /**
    * Default configuration options for the OpenAI client.
    * Sets the authorization header, content type, API URL, and default model.
    */
-  static readonly defaults: OpenAiClient.Config = {
+  static readonly defaults: OpenAi.Config = {
     headers: {
       "authorization": `Bearer ${Deno.env.get("OPENAI_SECRET_KEY")}`,
       "content-type": "application/json",
@@ -596,17 +601,14 @@ export class OpenAiClient extends HttpClient<typeof OpenAiClient> {
    * @param role    - The role of the message author.
    * @returns The constructed message object.
    */
-  public static buildMessage(
-    content: string,
-    role: OpenAiClient.ChatCompletion.Message["role"],
-  ) {
+  public static buildMessage(content: string, role: OpenAi.Chat.Message["role"]) {
     return {
       role,
       content,
     };
   }
 
-  protected getMergedConfig<C extends OpenAiClient.Config>(config: C) {
+  protected getMergedConfig<C extends OpenAi.Config>(config: C) {
     return unsafeDeepMerge<C>(this.defaults, config, { arrays: "merge" });
   }
 
@@ -617,8 +619,8 @@ export class OpenAiClient extends HttpClient<typeof OpenAiClient> {
    * @param payload - The request payload containing the chat completion parameters.
    * @returns A promise resolving to the API response containing the chat completion.
    */
-  public createChatCompletion(config: Omit<OpenAiClient.Config, "endpoint">) {
-    return this.post<OpenAiClient.ChatCompletion.Data>({
+  public createChatCompletion(config: Omit<OpenAi.Config, "endpoint">) {
+    return this.post<OpenAi.Chat.Completion>({
       endpoint: "/v1/chat/completions",
       ...config,
     });
