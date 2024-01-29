@@ -1,8 +1,11 @@
 # 💬 Lock files.
-deno.lock
 package-lock.json
+
+# 💬 Temporal files.
+tmp
 
 # 💬 Automatically generated data.
 var/cache/**/*.json
 var/cache/**/*.html
 coverage
+node_modules

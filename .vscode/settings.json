@@ -1,6 +1,9 @@
 {
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -8,29 +11,17 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "deno.cacheOnSave": true,
-  "deno.config": "./deno.json",
-  "deno.disablePaths": [
-    "./var/",
-    "./.prettierrc.cjs",
-    "./plugins/prettier/",
-    "./node_modules/"
-  ],
-  "deno.enable": true,
-  "deno.lint": true,
   "editor.formatOnSave": true,
+  "eslint.enable": true,
+  "eslint.format.enable": true,
+  "eslint.useESLintClass": true,
+  "editor.codeActionsOnSave": ["source.fixAll.eslint"],
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.suggest.autoImports": true,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "javascript.suggestionActions.enabled": false,
   "editor.rulers": [90],
-  "javascript.preferences.quoteStyle": "double",
-  "javascript.suggest.completeJSDocs": true,
-  "javascript.suggest.jsdoc.generateReturns": true,
-  "prettier.configPath": "./.prettierrc.cjs",
-  "prettier.enable": true,
-  "prettier.prettierPath": "./node_modules/prettier/index.cjs",
-  "typescript.inlayHints.parameterNames.enabled": "all",
-  "typescript.preferGoToSourceDefinition": true,
-  "typescript.preferences.quoteStyle": "double",
-  "typescript.suggest.completeJSDocs": true
+  "eslint.runtime": "node",
+  "eslint.debug": false
 }

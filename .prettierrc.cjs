@@ -1,8 +1,6 @@
 // @ts-check
 
-/**
- * @type {PrettierConfig & Partial<PJPOptions> & SortImportsConfig}
- */
+/** @type {PrettierConfig & Partial<PJPOptions>} */
 module.exports = {
   trailingComma: "all",
   tabWidth: 2,
@@ -17,27 +15,35 @@ module.exports = {
   plugins: ["./plugins/prettier/all.cjs"],
   jsdocEnsureDescriptionsAreSentences: true,
   jsdocPrintWidth: 90,
-  jsdocTagsOrder: ["example", "template", "param", "returns", "namespace", "typedef"],
+  jsdocTagsOrder: [
+    "example",
+    "internal",
+    "private",
+    "protected",
+    "template",
+    "this",
+    "param",
+    "returns",
+    "namespace",
+    "typedef",
+  ],
   jsdocFormatExamples: false,
   jsdocUseTypeScriptTypesCasing: false,
-  parser: "typescript",
+  parser: "babel-ts",
   jsdocMinSpacesBetweenNameAndDescription: 1,
   jsdocExperimentalFormatCommentsWithoutTags: true,
   jsdocPluginExtended: true,
-  importOrder: [
-    "^./global.ts$|^@global$",
-    "<THIRD_PARTY_MODULES>|^@dependencies$|^@dev-dependencies$",
-    "^@base$",
-    "^@fanfictions$",
-    "^@localization$",
-    "^[./]",
-  ],
-  importOrderSeparation: true,
+  jsdocPluginEnabled: true,
+  jsdocAllowAccessTag: false,
+  jsdocUseInlineCommentForASingleTagBlock: true,
+  jsdocFormatComplexTypesWithPrettier: true,
+  jsdocUseColumns: true,
+  jsdocSortTags: true,
   overrides: [
     {
-      files: "*.test.ts",
+      files: "*.ts",
       options: {
-        printWidth: 120,
+        parser: "typescript",
       },
     },
     {
@@ -50,13 +56,7 @@ module.exports = {
   ],
 };
 
-/**
- * @typedef {import("prettier").Options} PrettierConfig
- */
-
-/**
- * @typedef {import("@trivago/prettier-plugin-sort-imports").PluginConfig} SortImportsConfig
- */
+/** @typedef {import("prettier").Options} PrettierConfig */
 
 /**
  * Options for configuring Prettier JSDoc plugin behavior.
