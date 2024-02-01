@@ -58,13 +58,20 @@
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "prettier": "^3.2.4",
+    "scripty": "^2.1.1",
     "typescript": "^5.3.3"
   },
-  "scripts": {},
+  "scripts": {
+    "chmod": "chmod -R +x scripts",
+    "generate:locales": "scripty",
+    "start": "LOG_LEVEL=debug node --enable-source-maps --experimental-specifier-resolution=node base/index.js"
+  },
   "dependencies": {
     "@toridoriv/cheerio": "^1.0.6",
     "@toridoriv/toolkit": "github:toridoriv/toolkit",
+    "tslog": "^4.9.2",
     "zod": "^3.22.4"
   }
 }

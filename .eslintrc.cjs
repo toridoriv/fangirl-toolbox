@@ -4,7 +4,8 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: ["eslint:recommended", "plugin:prettier/recommended"],
+  extends: ["eslint:recommended", "prettier"],
+  plugins: ["prettier", "simple-import-sort"],
   overrides: [
     {
       files: ["*.cjs"],
@@ -35,19 +36,11 @@ module.exports = {
         usePrettierrc: true,
       },
     ],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
     "no-unused-vars": [
       "warn",
-      { argsIgnorePattern: "^_", varsIgnorePattern: "^_|^types" },
-    ],
-    "sort-imports": [
-      "error",
-      {
-        ignoreCase: false,
-        ignoreDeclarationSort: false,
-        ignoreMemberSort: false,
-        memberSyntaxSortOrder: ["none", "single", "all", "multiple"],
-        allowSeparatedGroups: true,
-      },
+      { argsIgnorePattern: "^_", varsIgnorePattern: "^_|^types|^Schema|^Common" },
     ],
   },
 };
