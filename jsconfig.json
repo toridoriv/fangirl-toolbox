@@ -16,5 +16,5 @@
     "target": "esnext"
   },
   "exclude": ["node_modules"],
-  "include": ["./base"]
+  "include": ["./lib"]
 }
