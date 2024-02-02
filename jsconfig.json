@@ -2,18 +2,19 @@
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
-    "module": "nodenext",
-    "target": "esnext",
-    "noEmit": true,
-    "moduleResolution": "nodenext",
-    "strictNullChecks": true,
-    "strictBindCallApply": true,
-    "strictFunctionTypes": true,
-    "skipLibCheck": true,
     "downlevelIteration": false,
     "isolatedModules": false,
-    "strict": true
+    "lib": ["esnext"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "target": "esnext"
   },
-  "include": ["./base"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "include": ["./base"]
 }
