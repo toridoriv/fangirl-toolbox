@@ -4,12 +4,17 @@
 import { writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 
+import { format, resolveConfig } from "prettier";
 import ts from "typescript";
 
 const require = createRequire(import.meta.url);
 const packageJson = require("../../package.json");
 const { factory } = ts;
-const resultFile = ts.createSourceFile("locales.js", "", ts.ScriptTarget.Latest);
+const resultFile = ts.createSourceFile(
+  packageJson.config.localization.file,
+  "",
+  ts.ScriptTarget.Latest,
+);
 const nodes = [
   createConstObject(
     "LANGUAGE_CODE",
@@ -37,8 +42,15 @@ const nodes = [
   ),
 ];
 const result = nodes.map(toString.bind(null, resultFile));
+const prettierOptions = await resolveConfig(packageJson.config.localization.file);
 
-writeFileSync("./base/locales.js", result.join("\n\n"), "utf-8");
+if (!prettierOptions) {
+  throw new Error("Unable to load prettier config.");
+}
+
+const content = await format(result.join("\n\n"), prettierOptions);
+
+writeFileSync(packageJson.config.localization.file, content, "utf-8");
 
 /**
  * @param {ts.Node} node

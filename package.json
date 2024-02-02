@@ -4,6 +4,7 @@
   "type": "module",
   "config": {
     "localization": {
+      "file": "./lib/locales.js",
       "languages": [
         {
           "code": "en",
