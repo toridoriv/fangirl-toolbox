@@ -1,4 +1,4 @@
-/** @type {import("eslint").Linter.Config} */
+/** @type {import("@eslint/eslintrc/lib/shared/types").ConfigData} */
 module.exports = {
   env: {
     es2021: true,
