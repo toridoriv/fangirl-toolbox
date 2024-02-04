@@ -1,6 +1,7 @@
-import { describe, expect, it } from "@jest/globals";
+import { describe, expect, it, jest } from "@jest/globals";
+import nock from "nock";
 
-import { HttpRequest, HttpResponse } from "../lib/http.js";
+import { HttpClient, HttpRequest, HttpResponse } from "../lib/http.js";
 
 describe("HttpRequest", () => {
   describe("When calling the static method create", () => {
@@ -193,6 +194,83 @@ describe("HttpResponse", () => {
       const httpResponse = await HttpResponse.fromResponse(nativeResponse, httpRequest);
 
       expect(httpResponse.body).toBe(body);
+    });
+  });
+});
+
+describe("HttpClient", () => {
+  describe("When calling the method create", () => {
+    it("creates a new instance of HttpClient with default configuration when no arguments are provided", () => {
+      const client = HttpClient.create();
+
+      expect(client).toBeInstanceOf(HttpClient);
+      expect(client.request).toBeInstanceOf(HttpRequest);
+      expect(client.interceptors).toEqual({ request: [], response: [] });
+    });
+
+    it("creates a new instance of HttpClient with provided request configuration", () => {
+      /** @type {import("../lib/http.js").HttpRequestInput} */
+      const config = { method: "POST", path: "/test" };
+      const client = HttpClient.create(config);
+
+      expect(client).toBeInstanceOf(HttpClient);
+      expect(client.request.properties.method).toBe(config.method);
+      expect(client.request.properties.path).toBe(config.path);
+    });
+
+    it("creates a new instance of HttpClient with provided interceptors", () => {
+      /** @type {import("../lib/http.js").Interceptors} */
+      const interceptors = {
+        request: [
+          function interceptRequest(req) {
+            return req;
+          },
+        ],
+        response: [
+          function interceptResponse(res) {
+            return res;
+          },
+        ],
+      };
+
+      const client = HttpClient.create({}, interceptors);
+      expect(client).toBeInstanceOf(HttpClient);
+      expect(client.interceptors.request).toContain(interceptors.request[0]);
+      expect(client.interceptors.response).toContain(interceptors.response[0]);
+    });
+  });
+
+  describe("When calling the method send", () => {
+    it("makes a request to the provided origin with the provided path", async () => {
+      const origin = "https://example.com";
+      const path = "/song";
+      const scope = nock(origin).get(path).reply(200, "The Bells of Notre Dame");
+      const response = await HttpClient.send({ origin, path });
+
+      expect(scope.isDone()).toBe(true);
+      expect(response.body).toBe("The Bells of Notre Dame");
+    });
+
+    it("calls the interceptors before and after making a request", async () => {
+      const interceptReq = jest.fn(function run(req) {
+        return req;
+      });
+      const interceptRes = jest.fn(function run(res) {
+        return res;
+      });
+      const origin = "https://example.com";
+      const path = "/song";
+
+      nock(origin).get(path).reply(200, "");
+
+      await HttpClient.send(
+        { origin, path },
+        // @ts-ignore: ¯\_(ツ)_/¯
+        { request: [interceptReq], response: [interceptRes] },
+      );
+
+      expect(interceptReq).toHaveBeenCalledTimes(1);
+      expect(interceptRes).toHaveBeenCalledTimes(1);
     });
   });
 });
