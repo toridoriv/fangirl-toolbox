@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
 
-import { HttpRequest } from "../lib/http.js";
+import { HttpRequest, HttpResponse } from "../lib/http.js";
 
 describe("HttpRequest", () => {
   describe("When calling the static method create", () => {
@@ -35,6 +35,15 @@ describe("HttpRequest", () => {
       });
 
       expect(request.contentType).toBe("application/json");
+    });
+
+    it("accepts a JSON like string", () => {
+      const body = JSON.stringify({ foo: "bar" });
+      const request = HttpRequest.create({
+        json: body,
+      });
+
+      expect(request.properties.json).toBe(body);
     });
 
     it("throws an error if is not a valid JSON string", () => {
@@ -134,6 +143,56 @@ describe("HttpRequest", () => {
       const request = httpRequest.toNativeRequest();
 
       expect(await request.text()).toBe(JSON.stringify(jsonBody));
+    });
+  });
+
+  describe("When creating a new instance with the origin and path options", () => {
+    it("removes the trailing slash from the origin", () => {
+      const httpRequest = HttpRequest.create({
+        origin: "https://example.com/",
+      });
+
+      expect(httpRequest.properties.origin).toBe("https://example.com");
+    });
+  });
+});
+
+describe("HttpResponse", () => {
+  describe("When calling the method fromResponse", () => {
+    it("constructs a new instance of the class", async () => {
+      const nativeResponse = new Response();
+      const httpRequest = HttpRequest.create();
+      const httpResponse = await HttpResponse.fromResponse(nativeResponse, httpRequest);
+
+      expect(httpResponse).toBeInstanceOf(HttpResponse);
+    });
+
+    it("handles a JSON response body", async () => {
+      const body = { foo: "bar" };
+      const nativeResponse = new Response(JSON.stringify(body), {
+        status: 200,
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+      const httpRequest = HttpRequest.create();
+      const httpResponse = await HttpResponse.fromResponse(nativeResponse, httpRequest);
+
+      expect(httpResponse.body).toMatchObject(body);
+    });
+
+    it("handles a text response body", async () => {
+      const body = "🎶 Who lives, who dies, who tells your story 🎶";
+      const nativeResponse = new Response(body, {
+        status: 200,
+        headers: {
+          "content-type": "text/plain",
+        },
+      });
+      const httpRequest = HttpRequest.create();
+      const httpResponse = await HttpResponse.fromResponse(nativeResponse, httpRequest);
+
+      expect(httpResponse.body).toBe(body);
     });
   });
 });
