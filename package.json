@@ -1,7 +1,23 @@
 {
-  "name": "fangirl-toolbox",
+  "name": "@toridoriv/fangirl-toolbox",
   "version": "0.1.0",
   "type": "module",
+  "description": "A collection of scripts and modules designed to cater to the unique needs and interests of fangirls 💖",
+  "author": {
+    "name": "Victoria Rodriguez",
+    "email": "vrodriguezfe@icloud.com",
+    "url": "https://github.com/toridoriv"
+  },
+  "license": "GPLv3",
+  "homepage": "https://github.com/toridoriv/fangirl-toolbox",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toridoriv/fangirl-toolbox.git"
+  },
+  "bugs": {
+    "url": "https://github.com/toridoriv/fangirl-toolbox/issues",
+    "email": "vrodriguezfe@icloud.com"
+  },
   "config": {
     "localization": {
       "file": "./lib/locales.js",
