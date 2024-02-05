@@ -34,6 +34,7 @@ module.exports = {
   ],
   jsdocFormatExamples: false,
   jsdocUseTypeScriptTypesCasing: false,
+  jsdocReplaceTagsSynonyms: false,
   parser: "babel-ts",
   jsdocMinSpacesBetweenNameAndDescription: 1,
   jsdocExperimentalFormatCommentsWithoutTags: true,
@@ -42,8 +43,11 @@ module.exports = {
   jsdocAllowAccessTag: false,
   jsdocUseInlineCommentForASingleTagBlock: true,
   jsdocFormatComplexTypesWithPrettier: true,
-  jsdocUseColumns: false,
+  jsdocUseColumns: true,
   jsdocDescriptionColumnMinLength: 1,
+  jsdocConsistentColumns: false,
+  jsdocIgnoreNewLineDescriptionsForConsistentColumns: false,
+  jsdocGroupColumnsByTag: true,
   jsdocSortTags: true,
   overrides: [
     {

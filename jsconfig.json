@@ -13,7 +13,10 @@
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
-    "target": "esnext"
+    "target": "esnext",
+    "strictPropertyInitialization": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "exactOptionalPropertyTypes": false
   },
   "exclude": ["node_modules"],
   "include": ["./lib"]
